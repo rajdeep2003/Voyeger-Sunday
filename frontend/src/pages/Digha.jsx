@@ -1,12 +1,17 @@
-"use client"
+"use client";
 
-import React, { useState, useRef, useEffect } from "react"
+import React, { useState, useRef, useEffect } from "react";
 
 // Game Selector Component
-const GameSelector = ({ onDiscountWon, onBackToPackages, discount, packageName }) => {
-  const [selectedGame, setSelectedGame] = useState(null)
-  const [gameResult, setGameResult] = useState(null)
-  const [isPlaying, setIsPlaying] = useState(false)
+const GameSelector = ({
+  onDiscountWon,
+  onBackToPackages,
+  discount,
+  packageName,
+}) => {
+  const [selectedGame, setSelectedGame] = useState(null);
+  const [gameResult, setGameResult] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const games = [
     {
@@ -30,38 +35,46 @@ const GameSelector = ({ onDiscountWon, onBackToPackages, discount, packageName }
       icon: "🎲",
       discounts: [5, 10, 15, 20],
     },
-  ]
+  ];
 
   const playGame = (game) => {
-    setIsPlaying(true)
-    setSelectedGame(game)
+    setIsPlaying(true);
+    setSelectedGame(game);
 
     setTimeout(() => {
-      const randomDiscount = game.discounts[Math.floor(Math.random() * game.discounts.length)]
-      setGameResult(randomDiscount)
-      onDiscountWon(randomDiscount)
-      setIsPlaying(false)
-    }, 2000)
-  }
+      const randomDiscount =
+        game.discounts[Math.floor(Math.random() * game.discounts.length)];
+      setGameResult(randomDiscount);
+      onDiscountWon(randomDiscount);
+      setIsPlaying(false);
+    }, 2000);
+  };
 
   if (discount) {
     return (
       <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
         <div className="text-4xl mb-4">🎉</div>
-        <h3 className="text-xl font-bold text-green-800 mb-2">Congratulations!</h3>
+        <h3 className="text-xl font-bold text-green-800 mb-2">
+          Congratulations!
+        </h3>
         <p className="text-green-700 mb-4">
           You won {discount}% discount on {packageName}!
         </p>
-        <button onClick={onBackToPackages} className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">
+        <button
+          onClick={onBackToPackages}
+          className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
+        >
           Apply Discount
         </button>
       </div>
-    )
+    );
   }
 
   return (
     <div className="bg-white border rounded-lg p-6">
-      <h3 className="text-xl font-bold mb-4 text-center">🎮 Play a Game to Win Discounts!</h3>
+      <h3 className="text-xl font-bold mb-4 text-center">
+        🎮 Play a Game to Win Discounts!
+      </h3>
 
       {!selectedGame ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -88,11 +101,13 @@ const GameSelector = ({ onDiscountWon, onBackToPackages, discount, packageName }
           ) : (
             <div className="space-y-4">
               <div className="text-6xl">{selectedGame.icon}</div>
-              <h4 className="text-xl font-bold">You won {gameResult}% discount!</h4>
+              <h4 className="text-xl font-bold">
+                You won {gameResult}% discount!
+              </h4>
               <button
                 onClick={() => {
-                  setSelectedGame(null)
-                  setGameResult(null)
+                  setSelectedGame(null);
+                  setGameResult(null);
                 }}
                 className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
               >
@@ -103,14 +118,15 @@ const GameSelector = ({ onDiscountWon, onBackToPackages, discount, packageName }
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
 const Digha = () => {
   const attractions = [
     {
       name: "Digha Beach",
-      image: "https://i.pinimg.com/736x/f5/29/19/f529199253460d973f1fd29d04704df4.jpg",
+      image:
+        "https://i.pinimg.com/736x/f5/29/19/f529199253460d973f1fd29d04704df4.jpg",
       rating: 4.5,
       duration: "2-4 hours",
       price: "Free",
@@ -123,7 +139,8 @@ const Digha = () => {
       rating: 4.3,
       duration: "2-3 hours",
       price: "Free",
-      description: "Less crowded extension of the main beach with cleaner sands",
+      description:
+        "Less crowded extension of the main beach with cleaner sands",
     },
     {
       name: "Marine Aquarium",
@@ -161,7 +178,7 @@ const Digha = () => {
       price: "₹100 (boat ride)",
       description: "Small island near Digha accessible by boat",
     },
-  ]
+  ];
 
   const monuments = [
     {
@@ -238,7 +255,8 @@ const Digha = () => {
       name: "Digha Gate",
       period: "20th Century",
       significance: "Iconic entrance arch marking the town boundary",
-      image: "https://i.pinimg.com/736x/f1/20/98/f120983d452da77522f4561de90a3132.jpg",
+      image:
+        "https://i.pinimg.com/736x/f1/20/98/f120983d452da77522f4561de90a3132.jpg",
       images: [
         "https://i.pinimg.com/736x/f1/20/98/f120983d452da77522f4561de90a3132.jpg",
         "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&auto=format&fit=crop&q=60",
@@ -255,7 +273,7 @@ const Digha = () => {
         longitude: 87.5049,
       },
     },
-  ]
+  ];
 
   const hotels = [
     {
@@ -297,7 +315,8 @@ const Digha = () => {
         "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&auto=format&fit=crop&q=60",
         "https://images.unsplash.com/photo-1596178065887-1198b6148b2b?w=600&auto=format&fit=crop&q=60",
       ],
-      description: "Comfortable mid-range resort with beautiful gardens and modern amenities. Great value for money.",
+      description:
+        "Comfortable mid-range resort with beautiful gardens and modern amenities. Great value for money.",
       contact: "+91 3224 266 200",
       address: "Hotel Road, Digha, West Bengal 721428",
       checkIn: "1:00 PM",
@@ -407,7 +426,7 @@ const Digha = () => {
         longitude: 87.5079,
       },
     },
-  ]
+  ];
 
   const restaurants = [
     {
@@ -560,7 +579,7 @@ const Digha = () => {
         longitude: 87.5059,
       },
     },
-  ]
+  ];
 
   const galleryImages = [
     {
@@ -583,11 +602,23 @@ const Digha = () => {
       src: "https://images.unsplash.com/photo-1698387353840-97cc29428082?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGRpZ2hhfGVufDB8fDB8fHww",
       alt: "Marine Aquarium",
     },
-    { src: "https://i.pinimg.com/736x/fa/3e/2a/fa3e2ab0c80453009eecbf811d99c7c7.jpg", alt: "Sea View Restaurant" },
-    { src: "https://i.pinimg.com/736x/98/e1/28/98e1280abadabdd2b634df4389fbf3a2.jpg", alt: "Fresh seafood" },
-    { src: "https://i.pinimg.com/736x/79/53/85/795385deec36397ac207433f5af81f2a.jpg", alt: "Sunset at Digha" },
-    { src: "https://i.pinimg.com/736x/b1/83/84/b18384e20e48c0e5885dd538a897e5cd.jpg", alt: "Beach activities" },
-  ]
+    {
+      src: "https://i.pinimg.com/736x/fa/3e/2a/fa3e2ab0c80453009eecbf811d99c7c7.jpg",
+      alt: "Sea View Restaurant",
+    },
+    {
+      src: "https://i.pinimg.com/736x/98/e1/28/98e1280abadabdd2b634df4389fbf3a2.jpg",
+      alt: "Fresh seafood",
+    },
+    {
+      src: "https://i.pinimg.com/736x/79/53/85/795385deec36397ac207433f5af81f2a.jpg",
+      alt: "Sunset at Digha",
+    },
+    {
+      src: "https://i.pinimg.com/736x/b1/83/84/b18384e20e48c0e5885dd538a897e5cd.jpg",
+      alt: "Beach activities",
+    },
+  ];
 
   const souvenirs = [
     {
@@ -595,7 +626,8 @@ const Digha = () => {
       name: "Conch Shells",
       price: 100,
       description: "Decorative shells collected from local beaches",
-      image: "https://i.pinimg.com/736x/9f/39/91/9f39913fe6836fe6264a536348319c30.jpg",
+      image:
+        "https://i.pinimg.com/736x/9f/39/91/9f39913fe6836fe6264a536348319c30.jpg",
       images: [
         "https://i.pinimg.com/736x/9f/39/91/9f39913fe6836fe6264a536348319c30.jpg",
         "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&auto=format&fit=crop&q=60",
@@ -615,7 +647,8 @@ const Digha = () => {
       name: "Handmade Jewelry",
       price: 300,
       description: "Local artisan-made shell and bead jewelry",
-      image: "https://i.pinimg.com/736x/7c/ce/44/7cce440b014f0dafda6e6bd49269024b.jpg",
+      image:
+        "https://i.pinimg.com/736x/7c/ce/44/7cce440b014f0dafda6e6bd49269024b.jpg",
       images: [
         "https://i.pinimg.com/736x/7c/ce/44/7cce440b014f0dafda6e6bd49269024b.jpg",
         "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&auto=format&fit=crop&q=60",
@@ -635,7 +668,8 @@ const Digha = () => {
       name: "Bengal Handicrafts",
       price: 600,
       description: "Traditional terracotta and dokra art pieces",
-      image: "https://i.pinimg.com/736x/54/c4/d2/54c4d21abb38b441f7aa88758768b567.jpg",
+      image:
+        "https://i.pinimg.com/736x/54/c4/d2/54c4d21abb38b441f7aa88758768b567.jpg",
       images: [
         "https://i.pinimg.com/736x/54/c4/d2/54c4d21abb38b441f7aa88758768b567.jpg",
         "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&auto=format&fit=crop&q=60",
@@ -676,7 +710,8 @@ const Digha = () => {
       name: "Local Sweets",
       price: 200,
       description: "Packaged Bengali sweets like sandesh and rosogolla",
-      image: "https://i.pinimg.com/736x/b1/e0/b3/b1e0b3a0034d0b9cc4398612ebc27a2e.jpg",
+      image:
+        "https://i.pinimg.com/736x/b1/e0/b3/b1e0b3a0034d0b9cc4398612ebc27a2e.jpg",
       images: [
         "https://i.pinimg.com/736x/b1/e0/b3/b1e0b3a0034d0b9cc4398612ebc27a2e.jpg",
         "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&auto=format&fit=crop&q=60",
@@ -696,7 +731,8 @@ const Digha = () => {
       name: "Sea Salt",
       price: 100,
       description: "Locally harvested sea salt in decorative packaging",
-      image: "https://i.pinimg.com/736x/17/1c/93/171c9345052b2b085a7be700623987e0.jpg",
+      image:
+        "https://i.pinimg.com/736x/17/1c/93/171c9345052b2b085a7be700623987e0.jpg",
       images: [
         "https://i.pinimg.com/736x/17/1c/93/171c9345052b2b085a7be700623987e0.jpg",
         "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=600&auto=format&fit=crop&q=60",
@@ -716,7 +752,8 @@ const Digha = () => {
       name: "Beach Hats",
       price: 250,
       description: "Colorful hats and caps for sun protection",
-      image: "https://i.pinimg.com/736x/52/ed/84/52ed8457f061c825261adba566f15078.jpg",
+      image:
+        "https://i.pinimg.com/736x/52/ed/84/52ed8457f061c825261adba566f15078.jpg",
       images: [
         "https://i.pinimg.com/736x/52/ed/84/52ed8457f061c825261adba566f15078.jpg",
         "https://images.unsplash.com/photo-1521369909029-2afed882baee?w=600&auto=format&fit=crop&q=60",
@@ -731,15 +768,15 @@ const Digha = () => {
         longitude: 87.5059,
       },
     },
-  ]
+  ];
 
-  const [activeTab, setActiveTab] = React.useState("attractions")
-  const [selectedCard, setSelectedCard] = React.useState(null)
-  const [hoveredCard, setHoveredCard] = React.useState(null)
-  const [mainImage, setMainImage] = React.useState(null)
-  const [showGameSelector, setShowGameSelector] = React.useState(false)
-  const [discount, setDiscount] = React.useState(null)
-  const gameSelectorRef = useRef(null)
+  const [activeTab, setActiveTab] = React.useState("attractions");
+  const [selectedCard, setSelectedCard] = React.useState(null);
+  const [hoveredCard, setHoveredCard] = React.useState(null);
+  const [mainImage, setMainImage] = React.useState(null);
+  const [showGameSelector, setShowGameSelector] = React.useState(false);
+  const [discount, setDiscount] = React.useState(null);
+  const gameSelectorRef = useRef(null);
   const [bookingForm, setBookingForm] = React.useState({
     name: "",
     email: "",
@@ -750,37 +787,42 @@ const Digha = () => {
     rooms: 1,
     quantity: 1,
     specialRequests: "",
-  })
+  });
 
   // Set main image when selected card changes
   useEffect(() => {
     if (selectedCard?.item?.images) {
-      setMainImage(selectedCard.item.images[0])
+      setMainImage(selectedCard.item.images[0]);
     }
-  }, [selectedCard])
+  }, [selectedCard]);
 
   const handleCardClick = (type, item) => {
-    setSelectedCard({ type, item })
-    setShowGameSelector(false)
-    setDiscount(null)
-  }
+    setSelectedCard({ type, item });
+    setShowGameSelector(false);
+    setDiscount(null);
+  };
 
   const handleCardHover = (type, item) => {
-    if (type === "hotels" || type === "restaurants" || type === "souvenirs" || type === "monuments") {
-      setHoveredCard({ type, item })
+    if (
+      type === "hotels" ||
+      type === "restaurants" ||
+      type === "souvenirs" ||
+      type === "monuments"
+    ) {
+      setHoveredCard({ type, item });
     }
-  }
+  };
 
   const handleCardLeave = () => {
-    setHoveredCard(null)
-  }
+    setHoveredCard(null);
+  };
 
   const handleBookingSubmit = (e) => {
-    e.preventDefault()
-    const finalPrice = calculateFinalPrice()
+    e.preventDefault();
+    const finalPrice = calculateFinalPrice();
     alert(
-      `Booking submitted for ${selectedCard.item.name}!\nTotal: ₹${finalPrice}\nWe will contact you at ${bookingForm.email} soon.`,
-    )
+      `Booking submitted for ${selectedCard.item.name}!\nTotal: ₹${finalPrice}\nWe will contact you at ${bookingForm.email} soon.`
+    );
     setBookingForm({
       name: "",
       email: "",
@@ -791,95 +833,109 @@ const Digha = () => {
       rooms: 1,
       quantity: 1,
       specialRequests: "",
-    })
-    setSelectedCard(null)
-    setShowGameSelector(false)
-    setDiscount(null)
-  }
+    });
+    setSelectedCard(null);
+    setShowGameSelector(false);
+    setDiscount(null);
+  };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setBookingForm((prev) => ({
       ...prev,
       [name]: value,
-    }))
-  }
+    }));
+  };
 
   const handleDiscountClick = () => {
-    setShowGameSelector(true)
-    setTimeout(() => gameSelectorRef.current?.scrollIntoView({ behavior: "smooth" }), 100)
-  }
+    setShowGameSelector(true);
+    setTimeout(
+      () => gameSelectorRef.current?.scrollIntoView({ behavior: "smooth" }),
+      100
+    );
+  };
 
   const handleDiscountWon = (discountAmount) => {
-    setDiscount(discountAmount)
-  }
+    setDiscount(discountAmount);
+  };
 
   // Helper functions for pricing
   const calculateDays = () => {
-    if (!bookingForm.checkIn || !bookingForm.checkOut) return 1
-    const start = new Date(bookingForm.checkIn)
-    const end = new Date(bookingForm.checkOut)
-    const diffTime = Math.abs(end - start)
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-    return diffDays || 1
-  }
+    if (!bookingForm.checkIn || !bookingForm.checkOut) return 1;
+    const start = new Date(bookingForm.checkIn);
+    const end = new Date(bookingForm.checkOut);
+    const diffTime = Math.abs(end - start);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays || 1;
+  };
 
   const getBasePrice = () => {
-    if (!selectedCard?.item) return 0
-    return selectedCard.item.price || 0
-  }
+    if (!selectedCard?.item) return 0;
+    return selectedCard.item.price || 0;
+  };
 
   const calculateTotalPrice = () => {
-    const basePrice = getBasePrice()
-    const { type } = selectedCard
+    const basePrice = getBasePrice();
+    const { type } = selectedCard;
 
     if (type === "hotels") {
-      const days = calculateDays()
-      return basePrice * days * bookingForm.rooms
+      const days = calculateDays();
+      return basePrice * days * bookingForm.rooms;
     } else if (type === "restaurants") {
-      return basePrice * bookingForm.guests
+      return basePrice * bookingForm.guests;
     } else if (type === "souvenirs") {
-      return basePrice * bookingForm.quantity
+      return basePrice * bookingForm.quantity;
     } else if (type === "monuments") {
-      return basePrice * bookingForm.guests
+      return basePrice * bookingForm.guests;
     }
-    return basePrice
-  }
+    return basePrice;
+  };
 
   const calculateFinalPrice = () => {
-    const total = calculateTotalPrice()
-    const discounted = discount ? total - total * (discount / 100) : total
-    return Math.round(discounted * 1.12) // 12% tax
-  }
+    const total = calculateTotalPrice();
+    const discounted = discount ? total - total * (discount / 100) : total;
+    return Math.round(discounted * 1.12); // 12% tax
+  };
 
   // Helper function to generate Google Maps link
   const getGoogleMapsLink = (item) => {
     if (item.geolocation) {
-      return `https://www.google.com/maps/search/?api=1&query=${item.geolocation.latitude},${item.geolocation.longitude}`
+      return `https://www.google.com/maps/search/?api=1&query=${item.geolocation.latitude},${item.geolocation.longitude}`;
     }
-    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.address || item.name + " Digha")}`
-  }
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+      item.address || item.name + " Digha"
+    )}`;
+  };
 
   const StarIcon = ({ filled = true }) => (
-    <svg className={`w-4 h-4 ${filled ? "text-yellow-400 fill-current" : "text-gray-300"}`} viewBox="0 0 20 20">
+    <svg
+      className={`w-4 h-4 ${
+        filled ? "text-yellow-400 fill-current" : "text-gray-300"
+      }`}
+      viewBox="0 0 20 20"
+    >
       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
     </svg>
-  )
+  );
 
   const renderStars = (rating) => {
-    return Array.from({ length: 5 }, (_, i) => <StarIcon key={i} filled={i < rating} />)
-  }
+    return Array.from({ length: 5 }, (_, i) => (
+      <StarIcon key={i} filled={i < rating} />
+    ));
+  };
 
   const TabButton = ({ id, label, isActive, onClick }) => (
     <button
       onClick={() => onClick(id)}
       className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-        isActive ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+        isActive
+          ? "bg-blue-600 text-white"
+          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
       }`}
     >
       {label}
     </button>
-  )
+  );
 
   const Card = ({
     children,
@@ -894,7 +950,9 @@ const Digha = () => {
       className={`bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 ${
         isClickable ? "cursor-pointer" : ""
       } ${
-        isHovered ? "ring-2 ring-blue-500 scale-[1.02] shadow-xl" : "hover:shadow-lg hover:-translate-y-1"
+        isHovered
+          ? "ring-2 ring-blue-500 scale-[1.02] shadow-xl"
+          : "hover:shadow-lg hover:-translate-y-1"
       } ${className}`}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
@@ -902,32 +960,44 @@ const Digha = () => {
     >
       {children}
     </div>
-  )
+  );
 
   const Badge = ({ children, variant = "default" }) => {
-    const baseClasses = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+    const baseClasses =
+      "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium";
     const variants = {
       default: "bg-blue-100 text-blue-800",
       secondary: "bg-gray-100 text-gray-800",
       outline: "border border-gray-300 text-gray-700",
-    }
+    };
 
-    return <span className={`${baseClasses} ${variants[variant]}`}>{children}</span>
-  }
+    return (
+      <span className={`${baseClasses} ${variants[variant]}`}>{children}</span>
+    );
+  };
 
-  const Button = ({ children, variant = "default", size = "default", onClick, className = "", type = "button" }) => {
+  const Button = ({
+    children,
+    variant = "default",
+    size = "default",
+    onClick,
+    className = "",
+    type = "button",
+  }) => {
     const baseClasses =
-      "inline-flex items-center justify-center rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
+      "inline-flex items-center justify-center rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2";
     const variants = {
       default: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500",
-      secondary: "bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500",
-      outline: "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-blue-500",
-    }
+      secondary:
+        "bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500",
+      outline:
+        "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-blue-500",
+    };
     const sizes = {
       sm: "px-3 py-1.5 text-sm",
       default: "px-4 py-2 text-sm",
       lg: "px-6 py-3 text-base",
-    }
+    };
 
     return (
       <button
@@ -937,15 +1007,17 @@ const Digha = () => {
       >
         {children}
       </button>
-    )
-  }
+    );
+  };
 
   // Image Album Component
   const ImageAlbum = ({ item }) => (
     <>
       <div className="relative overflow-hidden rounded-lg shadow-lg aspect-video group">
         <img
-          src={mainImage || item.images?.[0] || item.image || "/placeholder.svg"}
+          src={
+            mainImage || item.images?.[0] || item.image || "/placeholder.svg"
+          }
           alt={`${item.name} main view`}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
@@ -961,23 +1033,29 @@ const Digha = () => {
               alt={`Thumbnail ${idx + 1}`}
               onClick={() => setMainImage(img)}
               className={`h-20 w-32 flex-shrink-0 cursor-pointer rounded-md object-cover ring-2 transition-all hover:ring-blue-500 ${
-                img === mainImage ? "ring-blue-600 scale-105" : "ring-transparent"
+                img === mainImage
+                  ? "ring-blue-600 scale-105"
+                  : "ring-transparent"
               }`}
             />
           ))}
         </div>
       )}
     </>
-  )
+  );
 
   const DetailView = ({ item, type, onClose }) => {
-    if (!item) return null
+    if (!item) return null;
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 mt-24">
         <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto">
           <div className="relative">
-            <img src={item.image || "/placeholder.svg"} alt={item.name} className="w-full h-64 object-cover" />
+            <img
+              src={item.image || "/placeholder.svg"}
+              alt={item.name}
+              className="w-full h-64 object-cover"
+            />
             <button
               onClick={onClose}
               className="absolute top-2 right-2 bg-white rounded-full p-2 shadow-md hover:bg-gray-100 text-gray-600 hover:text-gray-800"
@@ -995,7 +1073,9 @@ const Digha = () => {
                 {/* Location with Map Link */}
                 <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
                   <span>📍</span>
-                  <span>{item.address || item.location || "Digha, West Bengal"}</span>
+                  <span>
+                    {item.address || item.location || "Digha, West Bengal"}
+                  </span>
                   <a
                     href={getGoogleMapsLink(item)}
                     target="_blank"
@@ -1019,7 +1099,9 @@ const Digha = () => {
                     <div className="flex items-center gap-2 mb-4">
                       <Badge variant="secondary">{item.category}</Badge>
                       <div className="flex">{renderStars(item.rating)}</div>
-                      <span className="text-xl font-semibold text-blue-600">₹{item.price}/night</span>
+                      <span className="text-xl font-semibold text-blue-600">
+                        ₹{item.price}/night
+                      </span>
                     </div>
 
                     <p className="text-gray-600 mb-4">{item.description}</p>
@@ -1060,7 +1142,9 @@ const Digha = () => {
                         <StarIcon />
                         <span className="font-semibold">{item.rating}</span>
                       </div>
-                      <span className="font-semibold text-blue-600">{item.priceRange}</span>
+                      <span className="font-semibold text-blue-600">
+                        {item.priceRange}
+                      </span>
                     </div>
 
                     <p className="text-gray-600 mb-4">{item.description}</p>
@@ -1079,7 +1163,9 @@ const Digha = () => {
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="font-semibold">💰 Average Cost:</span>
-                        <span className="text-blue-600 font-semibold">{item.avgCost}</span>
+                        <span className="text-blue-600 font-semibold">
+                          {item.avgCost}
+                        </span>
                       </div>
                     </div>
                   </>
@@ -1088,7 +1174,9 @@ const Digha = () => {
                 {type === "souvenirs" && (
                   <>
                     <div className="flex items-center justify-between mb-4">
-                      <span className="text-2xl font-bold text-blue-600">₹{item.price}</span>
+                      <span className="text-2xl font-bold text-blue-600">
+                        ₹{item.price}
+                      </span>
                     </div>
 
                     <p className="text-gray-600 mb-4">{item.description}</p>
@@ -1115,7 +1203,8 @@ const Digha = () => {
 
                     <p className="text-gray-600 mb-4">{item.description}</p>
                     <p className="text-lg mb-4">
-                      <strong>Historical Significance:</strong> {item.significance}
+                      <strong>Historical Significance:</strong>{" "}
+                      {item.significance}
                     </p>
 
                     <div className="space-y-3 mb-6">
@@ -1129,7 +1218,9 @@ const Digha = () => {
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="font-semibold">🎫 Entry Fee:</span>
-                        <span className="text-blue-600 font-semibold">{item.entryFee}</span>
+                        <span className="text-blue-600 font-semibold">
+                          {item.entryFee}
+                        </span>
                       </div>
                     </div>
                   </>
@@ -1142,15 +1233,17 @@ const Digha = () => {
                   {type === "hotels"
                     ? "Book This Hotel"
                     : type === "restaurants"
-                      ? "Reserve Table"
-                      : type === "monuments"
-                        ? "Book Visit"
-                        : "Purchase Item"}
+                    ? "Reserve Table"
+                    : type === "monuments"
+                    ? "Book Visit"
+                    : "Purchase Item"}
                 </h3>
 
                 <form onSubmit={handleBookingSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Full Name *
+                    </label>
                     <input
                       type="text"
                       name="name"
@@ -1163,7 +1256,9 @@ const Digha = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Email *
+                    </label>
                     <input
                       type="email"
                       name="email"
@@ -1176,7 +1271,9 @@ const Digha = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Phone Number *
+                    </label>
                     <input
                       type="tel"
                       name="phone"
@@ -1188,12 +1285,15 @@ const Digha = () => {
                     />
                   </div>
 
-                  {(type === "hotels" || type === "restaurants" || type === "monuments") && (
+                  {(type === "hotels" ||
+                    type === "restaurants" ||
+                    type === "monuments") && (
                     <>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
-                            {type === "hotels" ? "Check-in Date" : "Visit Date"} *
+                            {type === "hotels" ? "Check-in Date" : "Visit Date"}{" "}
+                            *
                           </label>
                           <input
                             type="date"
@@ -1207,7 +1307,9 @@ const Digha = () => {
 
                         {type === "hotels" && (
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Check-out Date *</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Check-out Date *
+                            </label>
                             <input
                               type="date"
                               name="checkOut"
@@ -1221,7 +1323,9 @@ const Digha = () => {
 
                         {type === "restaurants" && (
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Time
+                            </label>
                             <input
                               type="time"
                               name="checkOut"
@@ -1235,7 +1339,10 @@ const Digha = () => {
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          {type === "hotels" ? "Number of Guests" : "Number of People"} *
+                          {type === "hotels"
+                            ? "Number of Guests"
+                            : "Number of People"}{" "}
+                          *
                         </label>
                         <select
                           name="guests"
@@ -1254,7 +1361,9 @@ const Digha = () => {
 
                       {type === "hotels" && (
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Number of Rooms *</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Number of Rooms *
+                          </label>
                           <select
                             name="rooms"
                             value={bookingForm.rooms}
@@ -1275,7 +1384,9 @@ const Digha = () => {
 
                   {type === "souvenirs" && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Quantity
+                      </label>
                       <select
                         name="quantity"
                         value={bookingForm.quantity}
@@ -1292,7 +1403,9 @@ const Digha = () => {
                   )}
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Special Requests</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Special Requests
+                    </label>
                     <textarea
                       name="specialRequests"
                       value={bookingForm.specialRequests}
@@ -1340,7 +1453,12 @@ const Digha = () => {
                       {discount && (
                         <div className="flex justify-between text-green-600">
                           <span>Discount ({discount}%)</span>
-                          <span>-₹{Math.round(calculateTotalPrice() * (discount / 100))}</span>
+                          <span>
+                            -₹
+                            {Math.round(
+                              calculateTotalPrice() * (discount / 100)
+                            )}
+                          </span>
                         </div>
                       )}
                       <div className="flex justify-between">
@@ -1348,7 +1466,9 @@ const Digha = () => {
                         <span>
                           ₹
                           {Math.round(
-                            (discount ? calculateTotalPrice() * (1 - discount / 100) : calculateTotalPrice()) * 0.12,
+                            (discount
+                              ? calculateTotalPrice() * (1 - discount / 100)
+                              : calculateTotalPrice()) * 0.12
                           )}
                         </span>
                       </div>
@@ -1367,7 +1487,9 @@ const Digha = () => {
                     size="lg"
                     variant={discount ? "secondary" : "default"}
                   >
-                    {discount ? `Complete Booking (₹${calculateFinalPrice()})` : "Get Discount & Book"}
+                    {discount
+                      ? `Complete Booking (₹${calculateFinalPrice()})`
+                      : "Get Discount & Book"}
                   </Button>
                 </form>
               </div>
@@ -1385,7 +1507,11 @@ const Digha = () => {
 
                 {discount && (
                   <div className="mt-6 flex justify-center">
-                    <Button onClick={handleBookingSubmit} className="bg-green-600 hover:bg-green-700" size="lg">
+                    <Button
+                      onClick={handleBookingSubmit}
+                      className="bg-green-600 hover:bg-green-700"
+                      size="lg"
+                    >
                       Complete Booking (₹{calculateFinalPrice()})
                     </Button>
                   </div>
@@ -1395,8 +1521,8 @@ const Digha = () => {
           </div>
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -1411,7 +1537,9 @@ const Digha = () => {
         <div className="absolute inset-0 flex items-center justify-center px-4">
           <div className="text-center text-gray-900 p-8 bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl max-w-2xl">
             <h1 className="text-5xl font-semibold mb-4 tracking-tight">
-              <span className="inline-block border-b-4 border-amber-400 pb-2">Digha, West Bengal</span>
+              <span className="inline-block border-b-4 border-amber-400 pb-2">
+                Digha, West Bengal
+              </span>
             </h1>
             <p className="text-lg mb-6 text-gray-700 italic shadow-md opacity-90 mt-1">
               Bengal's beloved beach destination with golden sands
@@ -1469,18 +1597,48 @@ const Digha = () => {
             isActive={activeTab === "attractions"}
             onClick={setActiveTab}
           />
-          <TabButton id="transport" label="Transport" isActive={activeTab === "transport"} onClick={setActiveTab} />
-          <TabButton id="monuments" label="Monuments" isActive={activeTab === "monuments"} onClick={setActiveTab} />
-          <TabButton id="hotels" label="Hotels" isActive={activeTab === "hotels"} onClick={setActiveTab} />
+          <TabButton
+            id="transport"
+            label="Transport"
+            isActive={activeTab === "transport"}
+            onClick={setActiveTab}
+          />
+          <TabButton
+            id="monuments"
+            label="Monuments"
+            isActive={activeTab === "monuments"}
+            onClick={setActiveTab}
+          />
+          <TabButton
+            id="hotels"
+            label="Hotels"
+            isActive={activeTab === "hotels"}
+            onClick={setActiveTab}
+          />
           <TabButton
             id="restaurants"
             label="Restaurants"
             isActive={activeTab === "restaurants"}
             onClick={setActiveTab}
           />
-          <TabButton id="gallery" label="Gallery" isActive={activeTab === "gallery"} onClick={setActiveTab} />
-          <TabButton id="souvenirs" label="Souvenirs" isActive={activeTab === "souvenirs"} onClick={setActiveTab} />
-          <TabButton id="contact" label="Contact" isActive={activeTab === "contact"} onClick={setActiveTab} />
+          <TabButton
+            id="gallery"
+            label="Gallery"
+            isActive={activeTab === "gallery"}
+            onClick={setActiveTab}
+          />
+          <TabButton
+            id="souvenirs"
+            label="Souvenirs"
+            isActive={activeTab === "souvenirs"}
+            onClick={setActiveTab}
+          />
+          <TabButton
+            id="contact"
+            label="Contact"
+            isActive={activeTab === "contact"}
+            onClick={setActiveTab}
+          />
         </div>
 
         {/* Tab Content */}
@@ -1494,11 +1652,17 @@ const Digha = () => {
                     alt={attraction.name}
                     className="w-full h-48 object-cover"
                   />
-                  <Badge className="absolute top-2 right-2 bg-blue-600 text-white">{attraction.price}</Badge>
+                  <Badge className="absolute top-2 right-2 bg-blue-600 text-white">
+                    {attraction.price}
+                  </Badge>
                 </div>
                 <div className="p-4">
-                  <h3 className="font-semibold text-lg mb-2">{attraction.name}</h3>
-                  <p className="text-sm text-gray-600 mb-3">{attraction.description}</p>
+                  <h3 className="font-semibold text-lg mb-2">
+                    {attraction.name}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-3">
+                    {attraction.description}
+                  </p>
                   <div className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-1">
                       <StarIcon />
@@ -1518,15 +1682,21 @@ const Digha = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card>
               <div className="p-6">
-                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">🚆 By Train</h3>
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  🚆 By Train
+                </h3>
                 <div className="space-y-3">
                   <div>
                     <h4 className="font-semibold">Digha Railway Station</h4>
-                    <p className="text-sm text-gray-600">Connected to Howrah via Tamluk and Mecheda</p>
+                    <p className="text-sm text-gray-600">
+                      Connected to Howrah via Tamluk and Mecheda
+                    </p>
                   </div>
                   <div>
                     <h4 className="font-semibold">Howrah-Digha Express</h4>
-                    <p className="text-sm text-gray-600">Direct train from Kolkata (5-6 hours)</p>
+                    <p className="text-sm text-gray-600">
+                      Direct train from Kolkata (5-6 hours)
+                    </p>
                   </div>
                 </div>
               </div>
@@ -1534,15 +1704,21 @@ const Digha = () => {
 
             <Card>
               <div className="p-6">
-                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">🚌 By Bus</h3>
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  🚌 By Bus
+                </h3>
                 <div className="space-y-3">
                   <div>
                     <h4 className="font-semibold">WBSTC Buses</h4>
-                    <p className="text-sm text-gray-600">Government buses from Esplanade, Kolkata</p>
+                    <p className="text-sm text-gray-600">
+                      Government buses from Esplanade, Kolkata
+                    </p>
                   </div>
                   <div>
                     <h4 className="font-semibold">Private Buses</h4>
-                    <p className="text-sm text-gray-600">Multiple operators from Kolkata (5-6 hours)</p>
+                    <p className="text-sm text-gray-600">
+                      Multiple operators from Kolkata (5-6 hours)
+                    </p>
                   </div>
                 </div>
               </div>
@@ -1550,15 +1726,21 @@ const Digha = () => {
 
             <Card>
               <div className="p-6">
-                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">🚗 By Car</h3>
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  🚗 By Car
+                </h3>
                 <div className="space-y-3">
                   <div>
                     <h4 className="font-semibold">Route</h4>
-                    <p className="text-sm text-gray-600">Kolkata - Kharagpur - Digha (180km, 4-5 hours)</p>
+                    <p className="text-sm text-gray-600">
+                      Kolkata - Kharagpur - Digha (180km, 4-5 hours)
+                    </p>
                   </div>
                   <div>
                     <h4 className="font-semibold">Parking</h4>
-                    <p className="text-sm text-gray-600">Available near beaches and hotels</p>
+                    <p className="text-sm text-gray-600">
+                      Available near beaches and hotels
+                    </p>
                   </div>
                 </div>
               </div>
@@ -1566,11 +1748,15 @@ const Digha = () => {
 
             <Card>
               <div className="p-6">
-                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">🚲 Local Transport</h3>
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  🚲 Local Transport
+                </h3>
                 <div className="space-y-3">
                   <div>
                     <h4 className="font-semibold">Cycle Rickshaws</h4>
-                    <p className="text-sm text-gray-600">Ideal for short distances in town</p>
+                    <p className="text-sm text-gray-600">
+                      Ideal for short distances in town
+                    </p>
                   </div>
                   <div>
                     <h4 className="font-semibold">Auto Rickshaws</h4>
@@ -1590,7 +1776,10 @@ const Digha = () => {
                 onClick={() => handleCardClick("monuments", monument)}
                 onMouseEnter={() => handleCardHover("monuments", monument)}
                 onMouseLeave={handleCardLeave}
-                isHovered={hoveredCard?.type === "monuments" && hoveredCard?.item.id === monument.id}
+                isHovered={
+                  hoveredCard?.type === "monuments" &&
+                  hoveredCard?.item.id === monument.id
+                }
                 isClickable={true}
               >
                 <img
@@ -1599,16 +1788,23 @@ const Digha = () => {
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-4">
-                  <h3 className="font-semibold text-lg mb-2">{monument.name}</h3>
+                  <h3 className="font-semibold text-lg mb-2">
+                    {monument.name}
+                  </h3>
                   <Badge variant="outline" className="mb-2">
                     {monument.period}
                   </Badge>
-                  <p className="text-sm text-gray-600">{monument.significance}</p>
-                  {hoveredCard?.type === "monuments" && hoveredCard?.item.id === monument.id && (
-                    <div className="mt-3 text-center">
-                      <span className="text-sm text-blue-600 font-medium">Click to book visit →</span>
-                    </div>
-                  )}
+                  <p className="text-sm text-gray-600">
+                    {monument.significance}
+                  </p>
+                  {hoveredCard?.type === "monuments" &&
+                    hoveredCard?.item.id === monument.id && (
+                      <div className="mt-3 text-center">
+                        <span className="text-sm text-blue-600 font-medium">
+                          Click to book visit →
+                        </span>
+                      </div>
+                    )}
                 </div>
               </Card>
             ))}
@@ -1623,10 +1819,17 @@ const Digha = () => {
                 onClick={() => handleCardClick("hotels", hotel)}
                 onMouseEnter={() => handleCardHover("hotels", hotel)}
                 onMouseLeave={handleCardLeave}
-                isHovered={hoveredCard?.type === "hotels" && hoveredCard?.item.id === hotel.id}
+                isHovered={
+                  hoveredCard?.type === "hotels" &&
+                  hoveredCard?.item.id === hotel.id
+                }
                 isClickable={true}
               >
-                <img src={hotel.image || "/placeholder.svg"} alt={hotel.name} className="w-full h-48 object-cover" />
+                <img
+                  src={hotel.image || "/placeholder.svg"}
+                  alt={hotel.name}
+                  className="w-full h-48 object-cover"
+                />
                 <div className="p-4">
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="font-semibold text-lg">{hotel.name}</h3>
@@ -1634,7 +1837,9 @@ const Digha = () => {
                   </div>
                   <div className="flex items-center gap-2 mb-2">
                     <Badge variant="secondary">{hotel.category}</Badge>
-                    <span className="text-sm font-semibold text-blue-600">₹{hotel.price}/night</span>
+                    <span className="text-sm font-semibold text-blue-600">
+                      ₹{hotel.price}/night
+                    </span>
                   </div>
                   <div className="flex flex-wrap gap-1">
                     {hotel.amenities?.map((amenity, i) => (
@@ -1643,11 +1848,14 @@ const Digha = () => {
                       </Badge>
                     ))}
                   </div>
-                  {hoveredCard?.type === "hotels" && hoveredCard?.item.id === hotel.id && (
-                    <div className="mt-3 text-center">
-                      <span className="text-sm text-blue-600 font-medium">Click to book now →</span>
-                    </div>
-                  )}
+                  {hoveredCard?.type === "hotels" &&
+                    hoveredCard?.item.id === hotel.id && (
+                      <div className="mt-3 text-center">
+                        <span className="text-sm text-blue-600 font-medium">
+                          Click to book now →
+                        </span>
+                      </div>
+                    )}
                 </div>
               </Card>
             ))}
@@ -1662,7 +1870,10 @@ const Digha = () => {
                 onClick={() => handleCardClick("restaurants", restaurant)}
                 onMouseEnter={() => handleCardHover("restaurants", restaurant)}
                 onMouseLeave={handleCardLeave}
-                isHovered={hoveredCard?.type === "restaurants" && hoveredCard?.item.id === restaurant.id}
+                isHovered={
+                  hoveredCard?.type === "restaurants" &&
+                  hoveredCard?.item.id === restaurant.id
+                }
                 isClickable={true}
               >
                 <img
@@ -1673,21 +1884,30 @@ const Digha = () => {
                 <div className="p-4">
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="font-semibold text-lg">{restaurant.name}</h3>
-                    <span className="text-lg font-bold text-blue-600">{restaurant.priceRange}</span>
+                    <span className="text-lg font-bold text-blue-600">
+                      {restaurant.priceRange}
+                    </span>
                   </div>
                   <Badge variant="outline" className="mb-2">
                     {restaurant.cuisine}
                   </Badge>
-                  <p className="text-sm text-gray-600 mb-3">{restaurant.specialty}</p>
+                  <p className="text-sm text-gray-600 mb-3">
+                    {restaurant.specialty}
+                  </p>
                   <div className="flex items-center gap-1">
                     <StarIcon />
-                    <span className="text-sm font-semibold">{restaurant.rating}</span>
+                    <span className="text-sm font-semibold">
+                      {restaurant.rating}
+                    </span>
                   </div>
-                  {hoveredCard?.type === "restaurants" && hoveredCard?.item.id === restaurant.id && (
-                    <div className="mt-3 text-center">
-                      <span className="text-sm text-blue-600 font-medium">Click to reserve table →</span>
-                    </div>
-                  )}
+                  {hoveredCard?.type === "restaurants" &&
+                    hoveredCard?.item.id === restaurant.id && (
+                      <div className="mt-3 text-center">
+                        <span className="text-sm text-blue-600 font-medium">
+                          Click to reserve table →
+                        </span>
+                      </div>
+                    )}
                 </div>
               </Card>
             ))}
@@ -1697,14 +1917,19 @@ const Digha = () => {
         {activeTab === "gallery" && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {galleryImages.map((image, index) => (
-              <div key={index} className="relative group overflow-hidden rounded-lg">
+              <div
+                key={index}
+                className="relative group overflow-hidden rounded-lg"
+              >
                 <img
                   src={image.src || "/placeholder.svg"}
                   alt={image.alt}
                   className="w-full h-64 object-cover transition-transform group-hover:scale-105"
                 />
                 <div className="absolute inset-0 group-hover:bg-opacity-20 transition-all flex items-center justify-center">
-                  <span className="text-white text-2xl opacity-0 group-hover:opacity-100 transition-opacity">📷</span>
+                  <span className="text-white text-2xl opacity-0 group-hover:opacity-100 transition-opacity">
+                    📷
+                  </span>
                 </div>
               </div>
             ))}
@@ -1719,7 +1944,10 @@ const Digha = () => {
                 onClick={() => handleCardClick("souvenirs", souvenir)}
                 onMouseEnter={() => handleCardHover("souvenirs", souvenir)}
                 onMouseLeave={handleCardLeave}
-                isHovered={hoveredCard?.type === "souvenirs" && hoveredCard?.item.id === souvenir.id}
+                isHovered={
+                  hoveredCard?.type === "souvenirs" &&
+                  hoveredCard?.item.id === souvenir.id
+                }
                 isClickable={true}
               >
                 <img
@@ -1729,16 +1957,23 @@ const Digha = () => {
                 />
                 <div className="p-4">
                   <h3 className="font-semibold mb-2">{souvenir.name}</h3>
-                  <p className="text-sm text-gray-600 mb-2">{souvenir.description}</p>
+                  <p className="text-sm text-gray-600 mb-2">
+                    {souvenir.description}
+                  </p>
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-blue-600">₹{souvenir.price}</span>
+                    <span className="font-bold text-blue-600">
+                      ₹{souvenir.price}
+                    </span>
                     <Button size="sm">🛍 Buy</Button>
                   </div>
-                  {hoveredCard?.type === "souvenirs" && hoveredCard?.item.id === souvenir.id && (
-                    <div className="mt-3 text-center">
-                      <span className="text-sm text-blue-600 font-medium">Click to purchase →</span>
-                    </div>
-                  )}
+                  {hoveredCard?.type === "souvenirs" &&
+                    hoveredCard?.item.id === souvenir.id && (
+                      <div className="mt-3 text-center">
+                        <span className="text-sm text-blue-600 font-medium">
+                          Click to purchase →
+                        </span>
+                      </div>
+                    )}
                 </div>
               </Card>
             ))}
@@ -1750,27 +1985,35 @@ const Digha = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <Card>
                 <div className="p-6">
-                  <h3 className="text-lg font-semibold mb-4">Tourist Information</h3>
+                  <h3 className="text-lg font-semibold mb-4">
+                    Tourist Information
+                  </h3>
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
                       <span className="text-xl">📞</span>
                       <div>
                         <p className="font-semibold">Tourist Office</p>
-                        <p className="text-sm text-gray-600">+91 3224 266 000</p>
+                        <p className="text-sm text-gray-600">
+                          +91 3224 266 000
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="text-xl">📧</span>
                       <div>
                         <p className="font-semibold">Email</p>
-                        <p className="text-sm text-gray-600">digha.tourism@wb.gov.in</p>
+                        <p className="text-sm text-gray-600">
+                          digha.tourism@wb.gov.in
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="text-xl">🌐</span>
                       <div>
                         <p className="font-semibold">Website</p>
-                        <p className="text-sm text-gray-600">www.wbtourism.gov.in</p>
+                        <p className="text-sm text-gray-600">
+                          www.wbtourism.gov.in
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -1779,7 +2022,9 @@ const Digha = () => {
 
               <Card>
                 <div className="p-6">
-                  <h3 className="text-lg font-semibold mb-4">Emergency Contacts</h3>
+                  <h3 className="text-lg font-semibold mb-4">
+                    Emergency Contacts
+                  </h3>
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
                       <span className="text-xl">🚨</span>
@@ -1809,7 +2054,9 @@ const Digha = () => {
 
             <Card>
               <div className="p-6">
-                <h3 className="text-lg font-semibold mb-4">Useful Information</h3>
+                <h3 className="text-lg font-semibold mb-4">
+                  Useful Information
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <h4 className="font-semibold mb-2">Currency</h4>
@@ -1821,11 +2068,15 @@ const Digha = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold mb-2">Language</h4>
-                    <p className="text-sm text-gray-600">Bengali (Hindi & English widely understood)</p>
+                    <p className="text-sm text-gray-600">
+                      Bengali (Hindi & English widely understood)
+                    </p>
                   </div>
                   <div>
                     <h4 className="font-semibold mb-2">Electricity</h4>
-                    <p className="text-sm text-gray-600">230V, 50Hz (Type C, D & M plugs)</p>
+                    <p className="text-sm text-gray-600">
+                      230V, 50Hz (Type C, D & M plugs)
+                    </p>
                   </div>
                 </div>
               </div>
@@ -1836,10 +2087,14 @@ const Digha = () => {
 
       {/* Detail View Modal */}
       {selectedCard && (
-        <DetailView item={selectedCard.item} type={selectedCard.type} onClose={() => setSelectedCard(null)} />
+        <DetailView
+          item={selectedCard.item}
+          type={selectedCard.type}
+          onClose={() => setSelectedCard(null)}
+        />
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Digha
+export default Digha;

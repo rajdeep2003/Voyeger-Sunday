@@ -56,7 +56,17 @@ export function HotelCard({ hotel, onBookNow }) {
             </div>
           )}
         </div>
-        <button onClick={onBookNow} className="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">
+        <button 
+          onClick={() => {
+            console.log("🎯 HotelCard: Book Now clicked for hotel:", {
+              id: hotel._id,
+              name: hotel.name,
+              location: hotel.location
+            });
+            onBookNow();
+          }} 
+          className="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
+        >
           Book Now
         </button>
       </div>

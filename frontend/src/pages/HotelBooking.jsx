@@ -125,7 +125,19 @@ export default function HotelBooking() {
   };
 
   const handleBookNow = (hotelId) => {
-    const hotel = hotels.find((h) => h.id === hotelId);
+    console.log("🎯 HotelBooking: handleBookNow called with hotelId:", hotelId);
+    
+    const hotel = hotels.find((h) => h._id === hotelId);
+    console.log("🎯 HotelBooking: Found hotel:", hotel);
+    console.log("🎯 HotelBooking: Hotel details:", {
+      id: hotel?._id,
+      name: hotel?.name,
+      location: hotel?.location,
+      rating: hotel?.rating,
+      price: hotel?.price,
+      roomTypes: hotel?.roomTypes
+    });
+    
     setSelectedHotel(hotel);
     setMainImage(hotel.images?.[0] || null);
     setShowGameSelector(false);
@@ -137,7 +149,10 @@ export default function HotelBooking() {
     );
     if (firstAvailableRoomType) {
       setRoomType(firstAvailableRoomType.type);
+      console.log("🎯 HotelBooking: Set initial room type to:", firstAvailableRoomType.type);
     }
+    
+    console.log("🎯 HotelBooking: Hotel selection completed for:", hotel?.name);
   };
 
   const handleBackToResults = () => {
@@ -989,9 +1004,9 @@ export default function HotelBooking() {
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                   {filteredHotels.map((hotel) => (
                     <HotelCard
-                      key={hotel.id}
+                      key={hotel._id}
                       hotel={hotel}
-                      onBookNow={() => handleBookNow(hotel.id)}
+                      onBookNow={() => handleBookNow(hotel._id)}
                     />
                   ))}
                 </div>

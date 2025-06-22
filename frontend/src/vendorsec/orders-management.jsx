@@ -20,6 +20,12 @@ import {
 } from "../vendorsec/ui-components"
 import { Search, Eye } from "./icons (1)"
 
+/*  
+vender a--> p1,p2,p3
+vender b--> p4,p5,p6
+vender c--> p7,p8,p9
+*/
+
 export function OrdersManagement({ orders, setOrders }) {
   const [filterStatus, setFilterStatus] = useState("all")
   const [searchTerm, setSearchTerm] = useState("")
