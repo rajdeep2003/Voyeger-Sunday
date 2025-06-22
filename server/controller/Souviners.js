@@ -1,29 +1,27 @@
 const Souvenir = require("../models/SouvenirsSchema");
 const cloudinary = require("cloudinary").v2;
 
- 
 async function uploadFileToCloudinary(file, folder) {
   const options = { folder, resource_type: "auto" };
   return await cloudinary.uploader.upload(file.tempFilePath, options);
 }
- 
+
 function safeJSONParse(input, fallback = []) {
   try {
     return JSON.parse(input);
   } catch {
     return fallback;
   }
-} 
+}
+
 exports.createSouvenir = async (req, res) => {
   try {
     const { name, description, price, category, region, features, place } = req.body;
 
-    // Validate required fields
     if (!name || !description || !price || !category || !region || !place) {
       return res.status(400).json({ success: false, message: "Missing required fields." });
     }
 
-    // Validate price
     const parsedPrice = Number(price);
     if (isNaN(parsedPrice)) {
       return res.status(400).json({ success: false, message: "Invalid price. Must be a number." });
@@ -37,7 +35,6 @@ exports.createSouvenir = async (req, res) => {
 
     const parsedFeatures = features ? safeJSONParse(features, []) : [];
 
-    // Validate and upload images
     const souvenirImages = req.files?.imageFile;
     if (!souvenirImages) {
       return res.status(400).json({ success: false, message: "Please provide at least one image file." });
@@ -76,7 +73,7 @@ exports.createSouvenir = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
   }
 };
- 
+
 exports.getSouvenirsByPlace = async (req, res) => {
   try {
     const { place } = req.params;
@@ -93,10 +90,54 @@ exports.getSouvenirsByPlace = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
   }
 };
- 
+
 exports.getAllSouvenirs = async (req, res) => {
   try {
-    const souvenirs = await Souvenir.find().sort({ createdAt: -1 }); // Sorted by latest
+    const souvenirs = await Souvenir.find().sort({ createdAt: -1 });
+
+    res.status(200).json({ success: true, count: souvenirs.length, data: souvenirs });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
+  }
+};
+
+exports.getSouvenirsByCategory = async (req, res) => {
+  try {
+    const { category } = req.params;
+
+    const souvenirs = await Souvenir.find({
+      category: { $regex: `^${category}$`, $options: "i" },
+    });
+
+    if (souvenirs.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: `No souvenirs found for category: ${category}` });
+    }
+
+    res
+      .status(200)
+      .json({ success: true, count: souvenirs.length, data: souvenirs });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error", error: error.message });
+  }
+};
+
+exports.getSouvenirsByVendorName = async (req, res) => {
+  try {
+    const { vendorName } = req.params;
+
+    const souvenirs = await Souvenir.find({
+      "vendorDetails.name": { $regex: `^${vendorName}$`, $options: "i" }
+    });
+
+    if (souvenirs.length === 0) {
+      return res.status(404).json({ success: false, message: `No souvenirs found for vendor: ${vendorName}` });
+    }
 
     res.status(200).json({ success: true, count: souvenirs.length, data: souvenirs });
   } catch (error) {

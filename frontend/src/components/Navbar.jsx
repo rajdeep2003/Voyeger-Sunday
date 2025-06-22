@@ -5,9 +5,9 @@ import { useTranslation } from "react-i18next";
 import LanguageChanger from "./LanguageChanger";
 import { useAppContext } from "../context/AppContext";
 import Profile from "../pages/Profile";
-//import HotelApp from "../ownersec/HotelApp";
 
-// Search destinations data (could also be moved to a separate file)
+
+
 const searchDestinations = [
   { name: "Bishnupur", path: "/bishupur" },
   { name: "Doars", path: "/doars" },
@@ -23,7 +23,7 @@ const searchDestinations = [
   { name: "Paris", path: "/paris" },
   { name: "Kerala", path: "/kerala" },
   { name: "Andaman", path: "/andaman" },
-  { name: "Digha", Path: "/digha" },
+  { name: "Digha", path: "/digha" }, // ✅ fixed lowercase "path"
 ];
 
 const Navbar = () => {
@@ -68,7 +68,6 @@ const Navbar = () => {
       setShowResults(false);
     }
   };
-
   // Handle search submission
   const handleSearchSubmit = (e) => {
     e.preventDefault();

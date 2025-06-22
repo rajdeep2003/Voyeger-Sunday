@@ -7,10 +7,11 @@ import { Dashboard } from "../dashboard"
 import { SouvenirManagement } from "../souvenir-management"
 import { OrdersManagement } from "../orders-management"
 import { VendorProfile } from "../vendor-profile"
+import { useAppContext } from "../../context/AppContext"
 
 export default function VendorApp() {
-  const [activeTab, setActiveTab] = useState("dashboard")
-
+  const [activeTab, setActiveTab] = useState("dashboard");
+  const {logout , user} = useAppContext();
   // Sample data with your provided products
   const [souvenirs, setSouvenirs] = useState([
     {
@@ -346,10 +347,13 @@ export default function VendorApp() {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
               <Package className="h-8 w-8 text-blue-600" />
-              <h1 className="text-xl font-bold">Souvenir Admin</h1>
+              <h1 className="text-xl font-bold">{user?.name}</h1>
             </div>
-            <div className="flex items-center space-x-4">
-              <Badge variant="outline">Vendor Dashboard</Badge>
+            <div className="flex gap-x-2 items-center space-x-4">
+              {/* <Badge variant="outline">Vendor Dashboard</Badge> */}
+              <button
+                onClick={logout}
+               className="px-4 py-2 bg-red-600 rounded-xl text-sl">Logout</button>
               <div className="flex items-center space-x-2">
                 <img src={vendorInfo.avatar || "/placeholder.svg"} alt="Profile" className="w-8 h-8 rounded-full" />
                 <span className="text-sm font-medium">{vendorInfo.businessName}</span>

@@ -17,11 +17,12 @@ authroutes.get("/profile", authMiddleware, getUserProfile);
 authroutes.post("/avater", authMiddleware, uploadavater);
 authroutes.post("/community", authMiddleware, createCommunityPost);
 authroutes.post("/createReview", authMiddleware, createReview);
- 
+
+// Role-Based Routes
 authroutes.get("/admin-test", authMiddleware, authorizeRoles("Admin"), (req, res) => {
     res.json({ message: "Hello Admin, this is a protected route." });
 });
- 
+
 authroutes.get("/owner-test", authMiddleware, authorizeRoles("Owner"), (req, res) => {
     res.json({ message: "Hello Owner, this route is only for Owners." });
 });

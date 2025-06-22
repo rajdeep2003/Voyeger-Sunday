@@ -32,6 +32,7 @@ import { useAppContext } from "./context/AppContext";
 import HotelApp from "./ownersec/HotelApp";
 import ProtectedRoute from "./components/protectedRoute";
 import VendorApp from "./vendorsec/lib/vendorApp";
+import SouBooking_App from "./SouBooking_App";
 
 const App = () => {
   const { user } = useAppContext();
@@ -78,6 +79,7 @@ const App = () => {
             <Route path="/flightbook" element={<FlightBooking />} />
             <Route path="/trainbook" element={<TrainBooking />} />
             <Route path="/busbook" element={<BusBooking />} />
+            <Route path="/souvenirbook" element={<SouBooking_App />} />
             <Route path="/cabbook" element={<CabBooking />} />
             <Route path="/paris" element={<TravelDestination />} />
             <Route path="/purulia" element={<TravelDestinationPurulia />} />
@@ -98,6 +100,6 @@ const App = () => {
       )}
     </div>
   );
-};
+};  
 
 export default App;

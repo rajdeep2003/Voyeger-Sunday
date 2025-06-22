@@ -13,6 +13,7 @@ const ownerHotelRoutes = require("./routes/ownerhotelroutes");
 const hotelRouter = require("./routes/hotelroute");
 const orderRouter = require("./routes/orderRoute");
 const bookingrouter = require("./routes/bookingroute");
+const souvenirrouter = require("./routes/souvenirroute");
 dotenv.config();
 
 // Connect to Database & Cloudinary
@@ -42,6 +43,7 @@ app.use("/api/places", placeroutes);
 app.use("/api/hotels", hotelRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/bookings", bookingrouter);
+app.use("/api/souvenirs", souvenirrouter);
 
 app.use("/api/owner/hotel", ownerHotelRoutes);
 const PORT = process.env.PORT || 5000;

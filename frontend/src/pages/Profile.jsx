@@ -24,16 +24,14 @@ const Profile = ({ isOpen, onClose }) => {
     setUserDetails,
     isLoading,
     setIsLoading,
+    logout,
   } = useAppContext();
   const navigate = useNavigate();
 
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState("");
 
-  console.log("Profile component rendered");
-
   const token = user?.token || localStorage.getItem("token");
-  console.log("Token found:", token ? "Yes" : "No");
 
   useEffect(() => {
     if (token) {
@@ -63,7 +61,6 @@ const Profile = ({ isOpen, onClose }) => {
       setIsLoading(true);
       const formData = new FormData();
       formData.append("avatar", image);
-      console.log("Uploading image...");
 
       const { data } = await axios.post(
         "http://localhost:5000/api/users/avater",
@@ -77,7 +74,6 @@ const Profile = ({ isOpen, onClose }) => {
         }
       );
 
-      console.log("Image uploaded successfully:", data);
       setUserDetails(data.user);
       toast.success("Profile picture updated!");
       setImage(null);
@@ -85,26 +81,6 @@ const Profile = ({ isOpen, onClose }) => {
     } catch (error) {
       console.error("Image upload failed:", error);
       toast.error("Upload failed");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      setIsLoading(true);
-      await axios.get("http://localhost:5000/api/users/logout", {
-        withCredentials: true,
-      });
-      localStorage.clear();
-      setUser(null);
-      setProfileOpen(false);
-      console.log("User logged out");
-      toast.success("Logged out successfully");
-      setTimeout(() => navigate("/login"), 1000);
-    } catch (error) {
-      console.error("Logout failed:", error);
-      toast.error("Logout failed");
     } finally {
       setIsLoading(false);
     }
@@ -235,7 +211,10 @@ const Profile = ({ isOpen, onClose }) => {
               <FiStar /> Give Feedback
             </button>
             <button
-              onClick={handleLogout}
+              onClick={() => {
+                logout();
+                setProfileOpen(false);
+              }}
               disabled={isLoading}
               className="w-full py-2 bg-gray-100 text-gray-700 rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-gray-200 disabled:opacity-70"
             >
