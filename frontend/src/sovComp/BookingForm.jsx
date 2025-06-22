@@ -2,13 +2,19 @@
 
 import { useState } from "react"
 import { ArrowLeft, CreditCard, MapPin, Calendar, User } from "lucide-react"
+import { toast } from "react-toastify"
+import { ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
 export default function BookingForm({ souvenir, onBack, onBookingComplete }) {
+  console.log("🎯 Frontend: BookingForm component rendered");
+  console.log("🎯 Frontend: Souvenir prop:", souvenir);
+  
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
-    phone: "",
+    phone: "", 
     address: "",
     city: "",
     zipCode: "",
@@ -22,9 +28,15 @@ export default function BookingForm({ souvenir, onBack, onBookingComplete }) {
   })
 
   const [errors, setErrors] = useState({})
+  const [paymentSuccess, setPaymentSuccess] = useState(false)
+  const [showPaymentSimButtons, setShowPaymentSimButtons] = useState(false)
+  const [paymentError, setPaymentError] = useState("")
+
+  console.log("🎯 Frontend: Component state initialized");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
+    console.log(`🎯 Frontend: Input changed - ${name}:`, value);
     setFormData((prev) => ({ ...prev, [name]: value }))
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }))
@@ -32,6 +44,9 @@ export default function BookingForm({ souvenir, onBack, onBookingComplete }) {
   }
 
   const validateForm = () => {
+    console.log("🎯 Frontend: validateForm called");
+    console.log("🎯 Frontend: Current form data:", formData);
+    
     const newErrors = {}
 
     if (!formData.firstName.trim()) newErrors.firstName = "First name is required"
@@ -47,14 +62,259 @@ export default function BookingForm({ souvenir, onBack, onBookingComplete }) {
     if (!formData.cvv.trim()) newErrors.cvv = "CVV is required"
     if (!formData.cardName.trim()) newErrors.cardName = "Cardholder name is required"
 
+    console.log("🎯 Frontend: Validation errors:", newErrors);
     setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
+    
+    const isValid = Object.keys(newErrors).length === 0;
+    console.log("🎯 Frontend: Form validation result:", isValid);
+    return isValid;
   }
 
+  // Load Razorpay and create order
+  async function loadRazorpay() {
+    console.log("💳 Frontend: loadRazorpay called");
+    console.log("💳 Frontend: Souvenir data:", souvenir);
+    console.log("💳 Frontend: Final total:", finalTotal);
+    
+    const payload = {
+      amount: Number(finalTotal),
+      item: {
+        name: souvenir.name,
+        description: souvenir.description,
+        price: souvenir.price,
+        category: souvenir.category,
+        region: souvenir.region,
+        vendorDetails: souvenir.vendorDetails,
+        quantity: souvenir.quantity || 1
+      }
+    };
+    
+    console.log("💳 Frontend: Prepared payload:", payload);
+    console.log("💳 Frontend: Making API call to /api/souvenirs/create-order");
+    
+    try {
+      const res = await fetch("http://localhost:5000/api/souvenirs/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      
+      console.log("💳 Frontend: API response received");
+      console.log("💳 Frontend: Response status:", res.status);
+      console.log("💳 Frontend: Response ok:", res.ok);
+      
+      const data = await res.json();
+      console.log("💳 Frontend: Response data:", data);
+      
+      if (!res.ok || !data.order) {
+        console.error("❌ Frontend: Order creation failed");
+        console.error("❌ Frontend: Error message:", data.message);
+        alert(data.message || "Order creation failed");
+        return;
+      }
+      
+      console.log("✅ Frontend: Order created successfully");
+      console.log("✅ Frontend: Order details:", data.order);
+      
+      const order = data.order;
+      const options = {
+        key: "rzp_test_wb29ohYja8YQoG",
+        amount: order.amount,
+        currency: order.currency,
+        name: "Voyeger Ltd.",
+        description: `Souvenir Order - ${souvenir.name}`,
+        order_id: order.id,
+        handler: async function (response) {
+          console.log("💳 Frontend: Razorpay handler called with response:", response);
+          // No-op for simulation
+        },
+        theme: { color: "#000" },
+      };
+      
+      console.log("💳 Frontend: Razorpay options prepared:", options);
+      console.log("💳 Frontend: Opening Razorpay modal...");
+      
+      const rzp = new Razorpay(options);
+      rzp.open();
+      
+      console.log("💳 Frontend: Razorpay modal opened, showing simulation buttons");
+      setShowPaymentSimButtons(true); // Show Yes/No immediately
+    } catch (error) {
+      console.error("❌ Frontend: Exception in loadRazorpay:", error);
+      console.error("❌ Frontend: Error details:", {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
+      alert("Failed to initialize payment. Please try again.");
+    }
+  }
+
+  const handleSimulateYes = async () => {
+    console.log('💳 Frontend: handleSimulateYes called - Payment simulation successful');
+    console.log('💳 Frontend: Setting payment success state');
+    
+    setPaymentSuccess(true);
+    setShowPaymentSimButtons(false);
+    setPaymentError("");
+
+    console.log('💳 Frontend: Starting order saving process...');
+    // Save order to database first
+    const orderId = await saveSouvenirOrder();
+    
+    if (orderId) {
+      console.log('💳 Frontend: Order saved successfully, starting email sending process...');
+      // Send booking receipt email
+      await sendBookingReceiptEmail();
+      console.log('💳 Frontend: Email sending process completed');
+    } else {
+      console.error('💳 Frontend: Failed to save order, not sending email');
+    }
+  };
+
+  const handleSimulateNo = () => {
+    console.log('💳 Frontend: handleSimulateNo called - Payment simulation failed');
+    setPaymentSuccess(false);
+    setShowPaymentSimButtons(false);
+    setPaymentError("Payment failed. Please try again.");
+  };
+
+  const sendBookingReceiptEmail = async () => {
+    console.log('📧 Frontend: sendBookingReceiptEmail called');
+    console.log('📧 Frontend: Form data:', formData);
+    console.log('📧 Frontend: Souvenir data:', souvenir);
+    
+    try {
+      const bookingDetails = {
+        userName: `${formData.firstName} ${formData.lastName}`,
+        userEmail: formData.email,
+        itemName: souvenir.name,
+        itemDescription: souvenir.description,
+        itemCategory: souvenir.category,
+        itemRegion: souvenir.region,
+        quantity: souvenir.quantity || 1,
+        price: souvenir.price,
+        shippingCost: shippingCost,
+        tax: tax,
+        finalPrice: finalTotal,
+        deliveryAddress: `${formData.address}, ${formData.city}, ${formData.zipCode}, ${formData.country}`,
+        deliveryDate: formData.deliveryDate,
+        specialInstructions: formData.specialInstructions,
+        paymentStatus: "Success",
+        bookingDate: new Date().toLocaleString(),
+        bookingId: `souvenir-${Date.now()}`
+      };
+
+      console.log('📧 Frontend: Prepared booking details:', bookingDetails);
+      console.log('📧 Frontend: Making API call to /api/souvenirs/send-receipt');
+
+      const response = await fetch("http://localhost:5000/api/souvenirs/send-receipt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bookingDetails),
+      });
+
+      console.log('📧 Frontend: API response received:', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok
+      });
+
+      const data = await response.json();
+      console.log('📧 Frontend: API response data:', data);
+      
+      if (data.success) {
+        console.log('📧 Frontend: Email sent successfully, showing success toast');
+        toast.success("Souvenir order receipt email sent successfully");
+      } else {
+        console.error('📧 Frontend: Email sending failed, showing error toast');
+        console.error('📧 Frontend: Error details:', data.message);
+        toast.error("Failed to send order receipt email. Please try again later.");
+      }
+    } catch (error) {
+      console.error('📧 Frontend: Exception occurred while sending email');
+      console.error('📧 Frontend: Error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
+      toast.error("An error occurred while sending order receipt email. Please try again later.");
+    }
+  };
+
+  // Save souvenir order to database
+  const saveSouvenirOrder = async () => {
+    console.log('📝 Frontend: saveSouvenirOrder called');
+    console.log('📝 Frontend: Form data:', formData);
+    console.log('📝 Frontend: Souvenir data:', souvenir);
+    
+    try {
+      const orderData = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        city: formData.city,
+        zipCode: formData.zipCode,
+        country: formData.country,
+        itemsName: souvenir.name,
+        quantity: souvenir.quantity || 1,
+        price: finalTotal,
+        orderDate: new Date().toISOString(),
+        deliveryDate: formData.deliveryDate,
+        specialInstructions: formData.specialInstructions
+      };
+
+      console.log('📝 Frontend: Prepared order data:', orderData);
+      console.log('📝 Frontend: Making API call to /api/souvenirs/create-order-db');
+
+      const response = await fetch("http://localhost:5000/api/souvenirs/create-order-db", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderData),
+      });
+
+      console.log('📝 Frontend: API response received:', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok
+      });
+
+      const data = await response.json();
+      console.log('📝 Frontend: API response data:', data);
+      
+      if (data.success) {
+        console.log('📝 Frontend: Order saved successfully, showing success toast');
+        toast.success(`Order saved successfully! Order ID: ${data.orderId}`);
+        return data.orderId;
+      } else {
+        console.error('📝 Frontend: Order saving failed, showing error toast');
+        console.error('📝 Frontend: Error details:', data.message);
+        toast.error("Failed to save order to database. Please try again later.");
+        return null;
+      }
+    } catch (error) {
+      console.error('📝 Frontend: Exception occurred while saving order');
+      console.error('📝 Frontend: Error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
+      toast.error("An error occurred while saving order to database. Please try again later.");
+      return null;
+    }
+  };
+
   const handleSubmit = (e) => {
+    console.log("🎯 Frontend: handleSubmit called");
     e.preventDefault()
+    
     if (validateForm()) {
-      onBookingComplete()
+      console.log("✅ Frontend: Form validation passed, calling loadRazorpay");
+      loadRazorpay(); // Call Razorpay instead of onBookingComplete
+    } else {
+      console.log("❌ Frontend: Form validation failed, not proceeding");
     }
   }
 
@@ -62,6 +322,12 @@ export default function BookingForm({ souvenir, onBack, onBookingComplete }) {
   const shippingCost = totalPrice >= 50 ? 0 : 9.99
   const tax = totalPrice * 0.08
   const finalTotal = totalPrice + shippingCost + tax
+
+  console.log("🎯 Frontend: Price calculations:");
+  console.log("🎯 Frontend: - Total price:", totalPrice);
+  console.log("🎯 Frontend: - Shipping cost:", shippingCost);
+  console.log("🎯 Frontend: - Tax:", tax);
+  console.log("🎯 Frontend: - Final total:", finalTotal);
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -333,6 +599,47 @@ export default function BookingForm({ souvenir, onBack, onBookingComplete }) {
             >
               Complete Order - ${finalTotal.toFixed(2)}
             </button>
+
+            {/* Payment Simulation Buttons */}
+            {showPaymentSimButtons && (
+              <div className="bg-white p-6 rounded-lg border">
+                <h3 className="text-lg font-semibold mb-4 text-center">Payment Simulation</h3>
+                <div className="flex gap-4 justify-center">
+                  <button
+                    className="rounded-md bg-green-600 py-3 px-6 font-medium text-white hover:bg-green-700"
+                    onClick={handleSimulateYes}
+                  >
+                    Payment Successful
+                  </button>
+                  <button
+                    className="rounded-md bg-red-600 py-3 px-6 font-medium text-white hover:bg-red-700"
+                    onClick={handleSimulateNo}
+                  >
+                    Payment Failed
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Payment Success State */}
+            {paymentSuccess && !showPaymentSimButtons && (
+              <div className="bg-green-50 border border-green-200 p-6 rounded-lg">
+                <div className="text-center">
+                  <h3 className="text-lg font-semibold text-green-800 mb-2">Payment Successful!</h3>
+                  <p className="text-green-600">Your order has been placed successfully. You will receive a confirmation email shortly.</p>
+                </div>
+              </div>
+            )}
+
+            {/* Payment Error State */}
+            {paymentError && (
+              <div className="bg-red-50 border border-red-200 p-6 rounded-lg">
+                <div className="text-center">
+                  <h3 className="text-lg font-semibold text-red-800 mb-2">Payment Failed</h3>
+                  <p className="text-red-600">{paymentError}</p>
+                </div>
+              </div>
+            )}
           </form>
         </div>
 
@@ -380,6 +687,9 @@ export default function BookingForm({ souvenir, onBack, onBookingComplete }) {
           </div>
         </div>
       </div>
+      
+      {/* Toast Container */}
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   )
 }

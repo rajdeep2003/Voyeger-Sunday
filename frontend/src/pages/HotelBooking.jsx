@@ -227,6 +227,7 @@ export default function HotelBooking() {
 
   //Call your backend /create-order,  Get the Razorpay order ID, Call new Razorpay(options).open()
   async function loadRazorpay(hotel) {
+    console.log("razorpay hotel", hotel);
     const payload = {
       hotelId: hotel._id,
       amount: Number(calculateFinalPrice()),

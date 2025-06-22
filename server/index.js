@@ -1,5 +1,5 @@
+require('dotenv').config();
 const express = require("express");
-const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
@@ -14,7 +14,6 @@ const hotelRouter = require("./routes/hotelroute");
 const orderRouter = require("./routes/orderRoute");
 const bookingrouter = require("./routes/bookingroute");
 const souvenirrouter = require("./routes/souvenirroute");
-dotenv.config();
 
 // Connect to Database & Cloudinary
 connectDB();
