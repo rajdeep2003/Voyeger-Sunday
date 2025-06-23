@@ -3,8 +3,19 @@
 import { DashboardStats } from "./dashboard-stats"
 import { RecentOrders } from "./recent-orders"
 import { TopSellingItems } from "./top-selling-items"
+import { useVendorData } from "./hooks/useVendorData"
 
-export function Dashboard({ souvenirs, orders, analytics }) {
+export function Dashboard() {
+  const { souvenirs, orders, loading, error } = useVendorData()
+
+  if (loading) {
+    return <div>Loading dashboard data...</div>
+  }
+
+  if (error) {
+    return <div>Error loading data: {error.message}</div>
+  }
+
   return (
     <div className="space-y-6">
       <DashboardStats souvenirs={souvenirs} orders={orders} />

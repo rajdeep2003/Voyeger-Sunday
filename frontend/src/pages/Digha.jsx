@@ -1,7 +1,7 @@
 "use client";
-
+import { useAppContext } from "../context/AppContext";
 import React, { useState, useRef, useEffect } from "react";
-
+import { useNavigate } from "react-router-dom";
 // Game Selector Component
 const GameSelector = ({
   onDiscountWon,
@@ -12,7 +12,7 @@ const GameSelector = ({
   const [selectedGame, setSelectedGame] = useState(null);
   const [gameResult, setGameResult] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
-
+  const { setSouvenirLocation } = useAppContext();
   const games = [
     {
       id: "spin",
@@ -32,7 +32,7 @@ const GameSelector = ({
       id: "dice",
       name: "Lucky Dice",
       description: "Roll the dice for instant savings!",
-      icon: "🎲",
+      icon: "🎲", 
       discounts: [5, 10, 15, 20],
     },
   ];
@@ -122,6 +122,7 @@ const GameSelector = ({
 };
 
 const Digha = () => {
+  const { setSouvenirLocation } = useAppContext();
   const attractions = [
     {
       name: "Digha Beach",
@@ -776,6 +777,7 @@ const Digha = () => {
   const [mainImage, setMainImage] = React.useState(null);
   const [showGameSelector, setShowGameSelector] = React.useState(false);
   const [discount, setDiscount] = React.useState(null);
+  const navigate = useNavigate();
   const gameSelectorRef = useRef(null);
   const [bookingForm, setBookingForm] = React.useState({
     name: "",
@@ -972,7 +974,7 @@ const Digha = () => {
     };
 
     return (
-      <span className={`${baseClasses} ${variants[variant]}`}>{children}</span>
+      <span className={`${baseClasses} ${variants[variant]}`}>{children} </span>
     );
   };
 
@@ -1595,49 +1597,52 @@ const Digha = () => {
             id="attractions"
             label="Attractions"
             isActive={activeTab === "attractions"}
-            onClick={setActiveTab}
+            onClick={() => setActiveTab("attractions")}
           />
           <TabButton
             id="transport"
             label="Transport"
             isActive={activeTab === "transport"}
-            onClick={setActiveTab}
+            onClick={() => setActiveTab("transport")}
           />
           <TabButton
             id="monuments"
             label="Monuments"
             isActive={activeTab === "monuments"}
-            onClick={setActiveTab}
+            onClick={() => setActiveTab("monuments")}
           />
           <TabButton
             id="hotels"
             label="Hotels"
             isActive={activeTab === "hotels"}
-            onClick={setActiveTab}
+            onClick={() => setActiveTab("hotels")}
           />
           <TabButton
             id="restaurants"
             label="Restaurants"
             isActive={activeTab === "restaurants"}
-            onClick={setActiveTab}
+            onClick={() => setActiveTab("restaurants")}
           />
           <TabButton
             id="gallery"
             label="Gallery"
             isActive={activeTab === "gallery"}
-            onClick={setActiveTab}
+            onClick={() => setActiveTab("gallery")}
           />
           <TabButton
             id="souvenirs"
             label="Souvenirs"
             isActive={activeTab === "souvenirs"}
-            onClick={setActiveTab}
+            onClick={() => {
+              setSouvenirLocation("Digha");
+              navigate("/souvenirbook");
+            }}
           />
           <TabButton
             id="contact"
             label="Contact"
             isActive={activeTab === "contact"}
-            onClick={setActiveTab}
+            onClick={() => setActiveTab("contact")}
           />
         </div>
 

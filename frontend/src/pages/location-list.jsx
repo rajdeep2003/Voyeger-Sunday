@@ -156,6 +156,7 @@ export function LocationList({ locations, state, region }) {
           state={state}
           region={region}
           onClose={handleCloseDetails}
+          onPlanTrip={handleLocationClick}
         />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -194,7 +195,14 @@ export function LocationList({ locations, state, region }) {
     </div>
   )
 }
-function LocationDetails({ location, details, state, region, onClose }) {
+function LocationDetails({
+  location,
+  details,
+  state,
+  region,
+  onClose,
+  onPlanTrip,
+}) {
   return (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden">
       <div className="relative h-64 w-full">
@@ -241,9 +249,10 @@ function LocationDetails({ location, details, state, region, onClose }) {
         </div>
 
         <div className="pt-4">
-          <button 
-          onClick={handleLocationClick(location)}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors">
+          <button
+            onClick={() => onPlanTrip(location)}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
+          >
             Plan Your Trip
           </button>
         </div>

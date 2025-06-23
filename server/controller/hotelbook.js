@@ -162,8 +162,37 @@ const updateHotelByName = async (req, res) => {
         const hotelName = req.params.name;
         const updatedData = req.body;
         
-        console.log("Backend: Update data received from frontend:", updatedData._id);
+        console.log("Backend: Update data received from frontend:", {
+            hotelName: updatedData.name,
+            hotelId: updatedData._id,
+            bookingStatusLength: updatedData.bookingstatus?.length || 0
+        });
 
+        // Log some booking status details for debugging
+        if (updatedData.bookingstatus && updatedData.bookingstatus.length > 0) {
+            console.log("Backend: Sample booking status entries:");
+            updatedData.bookingstatus.slice(0, 3).forEach((booking, index) => {
+                console.log(`Backend: Booking ${index + 1}:`, {
+                    roomType: booking.roomType,
+                    bookingId: booking.bookingId,
+                    userId: booking.userId,
+                    email: booking.email,
+                    checkIn: booking.checkIn,
+                    checkOut: booking.checkOut
+                });
+            });
+        }
+
+        // First, check if the hotel exists
+        const existingHotel = await Hotel.findOne({ name: hotelName });
+        if (!existingHotel) {
+            console.error(`Backend Error: Hotel with name "${hotelName}" not found. Cannot update.`);
+            return res.status(404).json({ message: "Hotel not found" });
+        }
+
+        console.log(`Backend: Found existing hotel with ID: ${existingHotel._id}`);
+
+        // Perform the update
         const updatedHotel = await Hotel.findOneAndUpdate( 
             { name: hotelName }, 
             updatedData, 
@@ -171,11 +200,27 @@ const updateHotelByName = async (req, res) => {
         );
 
         if (!updatedHotel) {
-            console.error(`Backend Error: Hotel with name "${hotelName}" not found. Cannot update.`);
-            return res.status(404).json({ message: "Hotel not found" });
+            console.error(`Backend Error: Hotel update failed for "${hotelName}"`);
+            return res.status(500).json({ message: "Failed to update hotel" });
         }
 
         console.log(`Backend: Successfully updated hotel "${hotelName}".`);
+        console.log(`Backend: Updated hotel has ${updatedHotel.bookingstatus?.length || 0} booking status entries.`);
+        
+        // Log some updated booking status for verification
+        if (updatedHotel.bookingstatus && updatedHotel.bookingstatus.length > 0) {
+            const nonEmptyBookings = updatedHotel.bookingstatus.filter(b => b.bookingId && b.bookingId.trim() !== "");
+            console.log(`Backend: Non-empty bookings after update: ${nonEmptyBookings.length}`);
+            nonEmptyBookings.slice(0, 3).forEach((booking, index) => {
+                console.log(`Backend: Updated booking ${index + 1}:`, {
+                    roomType: booking.roomType,
+                    bookingId: booking.bookingId,
+                    userId: booking.userId,
+                    email: booking.email
+                });
+            });
+        }
+        
         res.status(200).json({ 
             message: "Hotel updated successfully", 
             hotel: updatedHotel 
@@ -183,6 +228,11 @@ const updateHotelByName = async (req, res) => {
 
     } catch (error) {
         console.error(`Backend: An unexpected error occurred while updating hotel "${req.params.name}":`, error);
+        console.error(`Backend: Error details:`, {
+            name: error.name,
+            message: error.message,
+            stack: error.stack
+        });
         res.status(500).json({ message: "Failed to update hotel", error: error.message });
     }
 };

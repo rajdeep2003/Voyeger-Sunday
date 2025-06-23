@@ -16,6 +16,7 @@ export const AppContextProvider = ({ children }) => {
   const [currentcity, setCurrentcity] = useState("");
   const [userDetails, setUserDetails] = useState(null);
    const [isLoading, setIsLoading] = useState(false);
+   const [souvenirLocation, setSouvenirLocation] = useState("");
  
   useEffect(() => {
     const token = localStorage.getItem("authToken");
@@ -54,7 +55,10 @@ export const AppContextProvider = ({ children }) => {
         setCurrentcity,
         userDetails,
         setUserDetails,
-        isLoading, setIsLoading
+        isLoading,
+        setIsLoading,
+        souvenirLocation,
+        setSouvenirLocation,
       }}
     >
       {children}

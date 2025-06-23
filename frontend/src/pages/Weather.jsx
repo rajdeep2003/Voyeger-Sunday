@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const WeatherApp = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(); 
   const apiKey = "d1913710720b5095ce7b6763b3f46e71";
   const weatherUrl =
     "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";

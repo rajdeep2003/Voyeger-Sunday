@@ -285,7 +285,7 @@ export default function HotelBooking() {
 
     console.log('📧 Frontend: Starting hotel booking status update...');
     // Update hotel booking status
-    await updateHotelBookingStatus(
+    const bookingUpdateSuccess = await updateHotelBookingStatus(
       selectedHotel.name,
       `bkg-${Date.now()}`,
       roomType,
@@ -295,12 +295,20 @@ export default function HotelBooking() {
       checkOutDate,
       rooms
     );
-    console.log('📧 Frontend: Hotel booking status update completed');
-
-    console.log('📧 Frontend: Starting email sending process...');
-    // Send booking receipt email
-    await sendBookingReceiptEmail();
-    console.log('📧 Frontend: Email sending process completed');
+    
+    if (bookingUpdateSuccess) {
+      console.log('📧 Frontend: Hotel booking status update completed successfully');
+      
+      console.log('📧 Frontend: Starting email sending process...');
+      // Send booking receipt email
+      await sendBookingReceiptEmail();
+      console.log('📧 Frontend: Email sending process completed');
+    } else {
+      console.error('📧 Frontend: Hotel booking status update failed - not proceeding with email');
+      // Reset payment success state since booking failed
+      setPaymentSuccess(false);
+      setPaymentError("Payment successful but booking failed. Please try again.");
+    }
   };
 
   const sendBookingReceiptEmail = async () => {
@@ -381,53 +389,136 @@ export default function HotelBooking() {
     checkOutDate,
     rooms
   ) => {
-    const response = await fetch(`http://localhost:5000/api/hotels/name/${selectedHotel.name}`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
-    const data = await response.json();
-    console.log("data special of api", data);
-    console.log(data.bookingstatus);
-  
-    //modify data.bookingstatus
-    let updatedCount = 0;
-  
-    for (let i = 0; i < data.bookingstatus.length && updatedCount < rooms; i++) {
-      const room = data.bookingstatus[i];
-      const isSameRoomType = room.roomType === roomType;
-      const isEmptySlot = !room.checkIn && !room.checkOut && !room.bookingId && !room.email && !room.userId;
-  
-      if (isSameRoomType && isEmptySlot) {
-        room.checkIn = checkInDate;
-        room.checkOut = checkOutDate;
-        room.bookingId = bookingId;
-        room.userId = name;
-        room.email = email; 
-        room.name = name;
-  
-        updatedCount++;
+    try {
+      console.log('🏨 Frontend: Starting hotel booking status update...');
+      console.log('🏨 Frontend: Parameters:', {
+        hotelname,
+        bookingId,
+        roomType,
+        name,
+        email,
+        checkInDate,
+        checkOutDate,
+        rooms
+      });
+      console.log('🏨 Frontend: Selected hotel name:', selectedHotel.name);
+
+      // Step 1: Get current hotel data
+      const response = await fetch(`http://localhost:5000/api/hotels/name/${selectedHotel.name}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      console.log('🏨 Frontend: GET response status:', response.status, response.statusText);
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch hotel data: ${response.status} ${response.statusText}`);
       }
+
+      const data = await response.json();
+      console.log("🏨 Frontend: Current hotel data:", data);
+      console.log("🏨 Frontend: Current booking status:", data.bookingstatus);
+      console.log("🏨 Frontend: Booking status array length:", data.bookingstatus?.length || 0);
+    
+      // Step 2: Modify booking status
+      let updatedCount = 0;
+    
+      for (let i = 0; i < data.bookingstatus.length && updatedCount < rooms; i++) {
+        const room = data.bookingstatus[i];
+        console.log(`🏨 Frontend: Checking room ${i + 1}:`, room);
+        
+        const isSameRoomType = room.roomType.toLowerCase() === roomType.toLowerCase();
+        const isEmptySlot = !room.bookingId || room.bookingId.trim() === "" || 
+                           !room.checkIn || room.checkIn.trim() === "" || 
+                           !room.checkOut || room.checkOut.trim() === "" || 
+                           !room.email || room.email.trim() === "" || 
+                           !room.userId || room.userId.trim() === "";
+        
+        console.log(`🏨 Frontend: Room ${i + 1} - Same type: ${isSameRoomType}, Empty slot: ${isEmptySlot}`);
+    
+        if (isSameRoomType && isEmptySlot) {
+          room.checkIn = checkInDate;
+          room.checkOut = checkOutDate;
+          room.bookingId = bookingId;
+          room.userId = name;
+          room.email = email; 
+          // Note: room.name is not part of the schema, so we don't set it
+
+          updatedCount++;
+          console.log(`🏨 Frontend: Updated room ${i + 1} with booking details:`, room);
+        }
+      }
+
+      if (updatedCount === 0) {
+        throw new Error(`No available rooms found for type: ${roomType}`);
+      }
+
+      if (updatedCount < rooms) {
+        console.warn(`🏨 Frontend: Warning - Only ${updatedCount} rooms updated out of ${rooms} requested`);
+      }
+    
+      console.log("🏨 Frontend: Updated hotel data:", data);
+      console.log(`🏨 Frontend: Successfully updated ${updatedCount} rooms`);
+    
+      // Step 3: Send updated data back to backend
+      console.log('🏨 Frontend: Sending PUT request to update hotel...');
+      const updateResponse = await fetch(`http://localhost:5000/api/hotels/name/${selectedHotel.name}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      console.log('🏨 Frontend: PUT response status:', updateResponse.status, updateResponse.statusText);
+
+      if (!updateResponse.ok) {
+        const errorData = await updateResponse.json().catch(() => ({}));
+        console.error('🏨 Frontend: PUT request failed with error data:', errorData);
+        throw new Error(`Failed to update hotel: ${updateResponse.status} ${updateResponse.statusText} - ${errorData.message || 'Unknown error'}`);
+      }
+
+      const updateData = await updateResponse.json();
+      console.log("🏨 Frontend: Server response after update:", updateData);
+      
+      if (updateData.message === "Hotel updated successfully") {
+        console.log("🏨 Frontend: Hotel booking status updated successfully!");
+        
+        // Verify the update by fetching the hotel data again
+        console.log("🏨 Frontend: Verifying the update...");
+        const verifyResponse = await fetch(`http://localhost:5000/api/hotels/name/${selectedHotel.name}`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
+        
+        if (verifyResponse.ok) {
+          const verifyData = await verifyResponse.json();
+          const updatedBookings = verifyData.bookingstatus.filter(room => 
+            room.bookingId === bookingId
+          );
+          
+          console.log("🏨 Frontend: Verification - Found updated bookings:", updatedBookings);
+          
+          if (updatedBookings.length > 0) {
+            console.log("🏨 Frontend: ✅ Booking verification successful!");
+            toast.success("Hotel booking status updated successfully!");
+            return true;
+          } else {
+            console.error("🏨 Frontend: ❌ Booking verification failed - no updated bookings found");
+            throw new Error("Booking was not properly saved to database");
+          }
+        } else {
+          console.error("🏨 Frontend: ❌ Failed to verify booking update");
+          throw new Error("Could not verify booking update");
+        }
+      } else {
+        console.error('🏨 Frontend: Server response does not confirm success:', updateData);
+        throw new Error("Server did not confirm successful update");
+      }
+
+    } catch (error) {
+      console.error("🏨 Frontend: Error updating hotel booking status:", error);
+      toast.error(`Failed to update hotel booking: ${error.message}`);
+      return false;
     }
-  
-    console.log("new updated status is", data);
-  
-    // ⚡️ At this point, you can send the updated data back to your backend if needed.
-    //update hotel by name
-    const updateResponse = await fetch(`http://localhost:5000/api/hotels/name/${selectedHotel.name}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    const updateData = await updateResponse.json();
-    console.log("Response from server after update:", updateData);
-    console.log(hotelname,
-      bookingId,
-      roomType,
-      name,
-      email,
-      checkInDate,
-      checkOutDate,
-      rooms)
   };
   
 
@@ -548,6 +639,60 @@ export default function HotelBooking() {
       align: "center",
     });
     doc.save("receipt.pdf");
+  };
+
+  // Test function to verify booking system
+  const testBookingSystem = async () => {
+    console.log('🧪 Frontend: Starting booking system test...');
+    
+    if (!selectedHotel) {
+      console.error('🧪 Frontend: No hotel selected for testing');
+      toast.error('Please select a hotel first');
+      return;
+    }
+
+    const testBookingId = `test-${Date.now()}`;
+    const testRoomType = roomType || 'Standard';
+    const testName = userDetails?.name || 'Test User';
+    const testEmail = userDetails?.email || 'test@example.com';
+    const testCheckIn = '2025-01-15';
+    const testCheckOut = '2025-01-17';
+    const testRooms = 1;
+
+    console.log('🧪 Frontend: Test parameters:', {
+      hotelName: selectedHotel.name,
+      bookingId: testBookingId,
+      roomType: testRoomType,
+      name: testName,
+      email: testEmail,
+      checkIn: testCheckIn,
+      checkOut: testCheckOut,
+      rooms: testRooms
+    });
+
+    try {
+      const result = await updateHotelBookingStatus(
+        selectedHotel.name,
+        testBookingId,
+        testRoomType,
+        testName,
+        testEmail,
+        testCheckIn,
+        testCheckOut,
+        testRooms
+      );
+
+      if (result) {
+        console.log('🧪 Frontend: ✅ Booking system test PASSED');
+        toast.success('Booking system test PASSED!');
+      } else {
+        console.log('🧪 Frontend: ❌ Booking system test FAILED');
+        toast.error('Booking system test FAILED!');
+      }
+    } catch (error) {
+      console.error('🧪 Frontend: ❌ Booking system test ERROR:', error);
+      toast.error(`Booking system test ERROR: ${error.message}`);
+    }
   };
 
   return (
@@ -922,6 +1067,14 @@ export default function HotelBooking() {
                       {!checkRoomAvailability()
                         ? "Not Enough Rooms Available"
                         : "Book Now"}
+                    </button>
+                    
+                    {/* Test button for debugging */}
+                    <button
+                      onClick={testBookingSystem}
+                      className="w-full mt-2 rounded-md bg-yellow-600 px-4 py-2 text-white hover:bg-yellow-700"
+                    >
+                      🧪 Test Booking System
                     </button>
                   </div>
                 </div>

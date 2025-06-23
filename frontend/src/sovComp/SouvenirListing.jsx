@@ -1,17 +1,24 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import SearchBar from "./SearchBar"
 import FilterSidebar from "./FilterSidebar"
 import SouvenirCard from "./SouvenirCard"
 import { Search, Filter, MapPin } from "lucide-react"
-
+import { useAppContext } from "../context/AppContext"
 export default function SouvenirListing({ souvenirs, onSouvenirClick }) {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedRegion, setSelectedRegion] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("")
   const [priceRange, setPriceRange] = useState([0, 1000])
   const [showFilters, setShowFilters] = useState(false)
+  const { souvenirLocation } = useAppContext()
+
+  useEffect(() => {
+    if (souvenirLocation) {
+      setSearchTerm(souvenirLocation);
+    }
+  }, [souvenirLocation]);
 
   const filteredSouvenirs = useMemo(() => {
     return souvenirs.filter((souvenir) => {
@@ -30,6 +37,10 @@ export default function SouvenirListing({ souvenirs, onSouvenirClick }) {
 
   const regions = [...new Set(souvenirs.map((s) => s.region))]
   const categories = [...new Set(souvenirs.map((s) => s.category))]
+  //
+  //
+  //
+  //1``
 
   return (
     <div className="container mx-auto p-10 mt-20 ">

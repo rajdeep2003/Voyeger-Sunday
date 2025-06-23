@@ -12,6 +12,9 @@ const MapPage = () => {
   const [search, setSearch] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [touristSpots, setTouristSpots] = useState([]);
+  const [spotsLoading, setSpotsLoading] = useState(false);
+  const [spotsError, setSpotsError] = useState(null);
 
   useEffect(() => {
     if (!navigator.geolocation) {
@@ -70,8 +73,72 @@ const MapPage = () => {
     return () => controller.abort();
   }, [search]);
 
+  // Fetch nearby popular tourist spots from Overpass API
+  useEffect(() => {
+    if (!coords) return;
+
+    setSpotsLoading(true);
+    setSpotsError(null);
+    const controller = new AbortController();
+
+    // This query looks for tourist spots that have a Wikidata tag,
+    // which is a good proxy for notability/popularity. It returns up to 10 results.
+    const overpassQuery = `
+      [out:json][timeout:25];
+      (
+        node["tourism"]["wikidata"](around:15000,${coords.lat},${coords.lng});
+        way["tourism"]["wikidata"](around:15000,${coords.lat},${coords.lng});
+        relation["tourism"]["wikidata"](around:15000,${coords.lat},${coords.lng});
+      );
+      out center;
+    `;
+
+    fetch(
+      `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(
+        overpassQuery
+      )}`,
+      { signal: controller.signal }
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        const spots = data.elements
+          .filter((element) => element.tags && element.tags.name)
+          .map((element) => ({
+            id: element.id,
+            name: element.tags.name,
+            lat: element.lat || element.center?.lat,
+            lon: element.lon || element.center?.lon,
+          }))
+          .filter((spot) => spot.lat && spot.lon);
+
+        const uniqueSpots = spots
+          .filter(
+            (spot, index, self) =>
+              index === self.findIndex((s) => s.name === spot.name)
+          )
+          .slice(0, 10); // Take the top 10 unique spots
+
+        setTouristSpots(uniqueSpots);
+        if (uniqueSpots.length === 0) {
+          setSpotsError("No popular tourist spots found nearby.");
+        }
+        setSpotsLoading(false);
+      })
+      .catch((err) => {
+        if (err.name !== "AbortError") {
+          setSpotsError("Could not fetch popular tourist spots.");
+        }
+        setSpotsLoading(false);
+      });
+
+    return () => controller.abort();
+  }, [coords]);
+
   const handleSuggestionClick = (suggestion) => {
-    setCoords({ lat: parseFloat(suggestion.lat), lng: parseFloat(suggestion.lon) });
+    setCoords({
+      lat: parseFloat(suggestion.lat),
+      lng: parseFloat(suggestion.lon),
+    });
     setSearch("");
     setSuggestions([]);
     setError(null);
@@ -83,6 +150,12 @@ const MapPage = () => {
       handleSuggestionClick(suggestions[0]);
     }
   };
+
+  const SmallSpinner = () => (
+    <div className="flex justify-center items-center h-16">
+      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+  );
 
   return (
     <div className="w-full h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-200">
@@ -114,6 +187,33 @@ const MapPage = () => {
             </ul>
           )}
         </form>
+
+        {/* Tourist Spots Section */}
+        <div className="w-full max-w-xl mb-4">
+          <h3 className="text-xl font-bold text-gray-800 mb-2 text-center">
+            Nearby Tourist Spots
+          </h3>
+          {spotsLoading ? (
+            <SmallSpinner />
+          ) : spotsError && touristSpots.length === 0 ? (
+            <p className="text-gray-500 text-center">{spotsError}</p>
+          ) : (
+            <div className="flex overflow-x-auto space-x-4 p-2 -m-2">
+              {touristSpots.map((spot) => (
+                <div
+                  key={spot.id}
+                  className="bg-gray-100 border border-gray-200 rounded-lg p-3 shadow-sm flex-shrink-0 cursor-pointer hover:shadow-md hover:bg-blue-50 transition-all"
+                  onClick={() => setCoords({ lat: spot.lat, lng: spot.lon })}
+                >
+                  <p className="font-semibold text-gray-700 whitespace-nowrap">
+                    {spot.name}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         {error ? (
           <div className="text-red-600 text-center px-4 py-4 bg-red-50 rounded-lg w-full">
             <h3 className="text-lg font-semibold mb-1">Error</h3>

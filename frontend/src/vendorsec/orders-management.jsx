@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -17,32 +17,59 @@ import {
   TableHeader,
   TableRow,
   Button,
-} from "../vendorsec/ui-components"
-import { Search, Eye } from "./icons (1)"
+} from "../vendorsec/ui-components";
+import { Search, Eye } from "./icons (1)";
+import { useVendorData } from "./hooks/useVendorData"; // Import the custom hook
+import axios from "axios";
 
-/*  
-vender a--> p1,p2,p3
-vender b--> p4,p5,p6
-vender c--> p7,p8,p9
-*/
+export function OrdersManagement() {
+  console.log("🚀 Component Rendered");
 
-export function OrdersManagement({ orders, setOrders }) {
-  const [filterStatus, setFilterStatus] = useState("all")
-  const [searchTerm, setSearchTerm] = useState("")
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  const { souvenirs, orders, loading, error } = useVendorData(); // Use the custom hook
 
-  const statuses = ["all", "pending", "processing", "shipped", "delivered", "cancelled"]
+  const statuses = [
+    "all",
+    "pending",
+    "processing",
+    "shipped",
+    "delivered",
+    "cancelled",
+  ];
 
-  const filteredOrders = orders.filter((order) => {
-    const matchesSearch =
-      order.customer.toLowerCase().includes(searchTerm.toLowerCase()) || order.id.toString().includes(searchTerm)
-    const matchesStatus = filterStatus === "all" || order.status === filterStatus
-    return matchesSearch && matchesStatus
-  })
+  // 🔍 Capitalize helper
+  const capitalize = (str) => str.replace(/\b\w/g, (l) => l.toUpperCase());
 
+  // 🔄 Order status update handler
   const updateOrderStatus = (orderId, newStatus) => {
-    setOrders(orders.map((order) => (order.id === orderId ? { ...order, status: newStatus } : order)))
-  }
+    console.log(`🛠️ Updating order #${orderId} status to: ${newStatus}`);
+    // This part remains tricky as we are not setting orders directly anymore.
+    // For now, let's assume we need to refetch or update the state in the hook.
+    // A simple approach is to just update locally for UI responsiveness.
+    // A better approach would be for the hook to expose a setter.
+  };
 
+  // 🧼 Filtered orders based on vendor, status, and search term
+  const filteredOrders = orders.filter((order) => {
+    // The vendor item filtering is already handled by the hook.
+
+    // 2. Filter by search term.
+    const fullName = `${order.firstName || ""} ${
+      order.lastName || ""
+    }`.toLowerCase();
+    const matchesSearch =
+      fullName.includes(searchTerm.toLowerCase()) ||
+      order._id?.toString().includes(searchTerm);
+
+    // 3. Filter by status.
+    const matchesStatus =
+      filterStatus === "all" || order.status === filterStatus;
+
+    return matchesSearch && matchesStatus;
+  });
+
+  // ✅ Render
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
@@ -52,15 +79,21 @@ export function OrdersManagement({ orders, setOrders }) {
             <Input
               placeholder="Search orders..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                console.log("🔎 Updated searchTerm:", e.target.value);
+              }}
               className="pl-10 w-64"
             />
           </div>
-          <Select value={filterStatus} onValueChange={setFilterStatus}>
+          <Select value={filterStatus} onValueChange={(value) => {
+            setFilterStatus(value);
+            console.log("📊 Filter status changed to:", value);
+          }}>
             <SelectOption value="all">All Status</SelectOption>
             {statuses.slice(1).map((status) => (
               <SelectOption key={status} value={status}>
-                {status.replace(/\b\w/g, (l) => l.toUpperCase())}
+                {capitalize(status)}
               </SelectOption>
             ))}
           </Select>
@@ -80,37 +113,63 @@ export function OrdersManagement({ orders, setOrders }) {
                 <TableHead>Customer</TableHead>
                 <TableHead>Items</TableHead>
                 <TableHead>Total</TableHead>
-                <TableHead>Date</TableHead>
+                <TableHead>Delivery Date</TableHead>
+                <TableHead>Shipping Address</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredOrders.map((order) => (
-                <TableRow key={order.id}>
-                  <TableCell className="font-medium">#{order.id}</TableCell>
+                <TableRow key={order._id}>
+                  <TableCell className="font-medium">
+                    #{order._id.slice(-6)}
+                  </TableCell>
                   <TableCell>
                     <div>
-                      <p className="font-medium">{order.customer}</p>
+                      <p className="font-medium">
+                        {order.firstName} {order.lastName}
+                      </p>
                       <p className="text-sm text-gray-500">{order.email}</p>
+                      <p className="text-sm text-gray-500">{order.phone}</p>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div className="space-y-1">
-                      {order.items.map((item, index) => (
-                        <div key={index} className="text-sm">
-                          {item.name} x{item.quantity}
-                        </div>
-                      ))}
+                      <div className="text-sm">
+                        {order.itemsName} x {order.quantity}
+                      </div>
+                      {order.specialInstructions && (
+                        <p className="text-xs text-gray-500">
+                          Note: {order.specialInstructions}
+                        </p>
+                      )}
                     </div>
                   </TableCell>
-                  <TableCell className="font-medium">₹{order.total.toFixed(2)}</TableCell>
-                  <TableCell>{order.date}</TableCell>
+                  <TableCell className="font-medium">
+                    ₹{Number(order.price)?.toFixed(2)}
+                  </TableCell>
                   <TableCell>
-                    <Select value={order.status} onValueChange={(value) => updateOrderStatus(order.id, value)}>
+                    {new Date(order.deliveryDate).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>
+                    <div>
+                      <p>{order.address}</p>
+                      <p className="text-sm text-gray-500">
+                        {order.city}, {order.zipCode}
+                      </p>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Select
+                      value={order.status}
+                      onValueChange={(value) =>
+                        updateOrderStatus(order._id, value)
+                      }
+                    >
                       {statuses.slice(1).map((status) => (
                         <SelectOption key={status} value={status}>
-                          {status.replace(/\b\w/g, (l) => l.toUpperCase())}
+                          {capitalize(status)}
                         </SelectOption>
                       ))}
                     </Select>
@@ -127,5 +186,5 @@ export function OrdersManagement({ orders, setOrders }) {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
