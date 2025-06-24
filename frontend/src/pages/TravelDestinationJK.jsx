@@ -1,8 +1,12 @@
 "use client";
 
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useAppContext } from "../context/AppContext";
 
 const TravelDestinationJK = () => {
+  const { setSouvenirLocation } = useAppContext();
+  const navigate = useNavigate();
   const attractions = [
     {
       name: "Vaishno Devi Temple",
@@ -514,7 +518,11 @@ const TravelDestinationJK = () => {
             id="souvenirs"
             label="Souvenirs"
             isActive={activeTab === "souvenirs"}
-            onClick={setActiveTab}
+            onClick={()=>{
+              setActiveTab("souvenirs");
+              setSouvenirLocation("Kashmir");
+              navigate("/souvenirbook");
+            }}
           />
           <TabButton
             id="contact"
@@ -564,97 +572,100 @@ const TravelDestinationJK = () => {
           </div>
         )}
 
-       {activeTab === "transport" && (
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <Card className="transition-transform hover:scale-105 hover:bg-gray-50">
-      <div className="p-6">
-        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-          ✈️ By Air
-        </h3>
-        <div className="space-y-3">
-          <div>
-            <h4 className="font-semibold">Sheikh ul-Alam Airport (SXR)</h4>
-            <p className="text-sm text-gray-600">
-              Main international airport in Srinagar, 12km from city center
-            </p>
-          </div>
-          <div>
-            <h4 className="font-semibold">Jammu Airport (IXJ)</h4>
-            <p className="text-sm text-gray-600">
-              Primary airport for Jammu region, 8km from city center
-            </p>
-          </div>
-        </div>
-      </div>
-    </Card>
+        {activeTab === "transport" && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="transition-transform hover:scale-105 hover:bg-gray-50">
+              <div className="p-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  ✈️ By Air
+                </h3>
+                <div className="space-y-3">
+                  <div>
+                    <h4 className="font-semibold">
+                      Sheikh ul-Alam Airport (SXR)
+                    </h4>
+                    <p className="text-sm text-gray-600">
+                      Main international airport in Srinagar, 12km from city
+                      center
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">Jammu Airport (IXJ)</h4>
+                    <p className="text-sm text-gray-600">
+                      Primary airport for Jammu region, 8km from city center
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Card>
 
-    <Card className="transition-transform hover:scale-105 hover:bg-gray-50">
-      <div className="p-6">
-        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-          🚄 By Train
-        </h3>
-        <div className="space-y-3">
-          <div>
-            <h4 className="font-semibold">Jammu Tawi Station</h4>
-            <p className="text-sm text-gray-600">
-              Main railhead connecting to major Indian cities
-            </p>
-          </div>
-          <div>
-            <h4 className="font-semibold">Udhampur Railway Station</h4>
-            <p className="text-sm text-gray-600">
-              Northernmost rail connection in the region
-            </p>
-          </div>
-        </div>
-      </div>
-    </Card>
+            <Card className="transition-transform hover:scale-105 hover:bg-gray-50">
+              <div className="p-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  🚄 By Train
+                </h3>
+                <div className="space-y-3">
+                  <div>
+                    <h4 className="font-semibold">Jammu Tawi Station</h4>
+                    <p className="text-sm text-gray-600">
+                      Main railhead connecting to major Indian cities
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">Udhampur Railway Station</h4>
+                    <p className="text-sm text-gray-600">
+                      Northernmost rail connection in the region
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Card>
 
-    <Card className="transition-transform hover:scale-105 hover:bg-gray-50">
-      <div className="p-6">
-        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-          🚌 Public Transport
-        </h3>
-        <div className="space-y-3">
-          <div>
-            <h4 className="font-semibold">SRTC Buses</h4>
-            <p className="text-sm text-gray-600">
-              State-run buses connecting major towns
-            </p>
-          </div>
-          <div>
-            <h4 className="font-semibold">Shared Taxis</h4>
-            <p className="text-sm text-gray-600">
-              Common for inter-city travel (Sumos, Tavera)
-            </p>
-          </div>
-        </div>
-      </div>
-    </Card>
+            <Card className="transition-transform hover:scale-105 hover:bg-gray-50">
+              <div className="p-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  🚌 Public Transport
+                </h3>
+                <div className="space-y-3">
+                  <div>
+                    <h4 className="font-semibold">SRTC Buses</h4>
+                    <p className="text-sm text-gray-600">
+                      State-run buses connecting major towns
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">Shared Taxis</h4>
+                    <p className="text-sm text-gray-600">
+                      Common for inter-city travel (Sumos, Tavera)
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Card>
 
-    <Card className="transition-transform hover:scale-105 hover:bg-gray-50">
-      <div className="p-6">
-        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-          🚗 By Road
-        </h3>
-        <div className="space-y-3">
-          <div>
-            <h4 className="font-semibold">National Highway 44</h4>
-            <p className="text-sm text-gray-600">
-              Main highway connecting Jammu to Srinagar
-            </p>
+            <Card className="transition-transform hover:scale-105 hover:bg-gray-50">
+              <div className="p-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  🚗 By Road
+                </h3>
+                <div className="space-y-3">
+                  <div>
+                    <h4 className="font-semibold">National Highway 44</h4>
+                    <p className="text-sm text-gray-600">
+                      Main highway connecting Jammu to Srinagar
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">Car Rentals</h4>
+                    <p className="text-sm text-gray-600">
+                      Available with local drivers familiar with terrain
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Card>
           </div>
-          <div>
-            <h4 className="font-semibold">Car Rentals</h4>
-            <p className="text-sm text-gray-600">
-              Available with local drivers familiar with terrain
-            </p>
-          </div>
-        </div>
-      </div>
-    </Card>
-  </div>
-)}
+        )}
 
         {activeTab === "monuments" && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -808,116 +819,116 @@ const TravelDestinationJK = () => {
           </div>
         )}
 
-{activeTab === "contact" && (
-  <div className="space-y-6">
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <Card className="transition-transform hover:scale-105 hover:bg-gray-50">
-        <div className="p-6">
-          <h3 className="text-lg font-semibold mb-4">
-            Tourist Information
-          </h3>
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <span className="text-xl">📞</span>
-              <div>
-                <p className="font-semibold">Tourist Helpline</p>
-                <p className="text-sm text-gray-600">
-                  +91 194 245 2691 (Srinagar)
-                </p>
-                <p className="text-sm text-gray-600">
-                  +91 191 254 8172 (Jammu)
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-xl">📧</span>
-              <div>
-                <p className="font-semibold">Email</p>
-                <p className="text-sm text-gray-600">
-                  jktourism@jk.gov.in
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-xl">🌐</span>
-              <div>
-                <p className="font-semibold">Website</p>
-                <p className="text-sm text-gray-600">
-                  www.jktourism.jk.gov.in
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Card>
+        {activeTab === "contact" && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <Card className="transition-transform hover:scale-105 hover:bg-gray-50">
+                <div className="p-6">
+                  <h3 className="text-lg font-semibold mb-4">
+                    Tourist Information
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">📞</span>
+                      <div>
+                        <p className="font-semibold">Tourist Helpline</p>
+                        <p className="text-sm text-gray-600">
+                          +91 194 245 2691 (Srinagar)
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          +91 191 254 8172 (Jammu)
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">📧</span>
+                      <div>
+                        <p className="font-semibold">Email</p>
+                        <p className="text-sm text-gray-600">
+                          jktourism@jk.gov.in
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">🌐</span>
+                      <div>
+                        <p className="font-semibold">Website</p>
+                        <p className="text-sm text-gray-600">
+                          www.jktourism.jk.gov.in
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Card>
 
-      <Card className="transition-transform hover:scale-105 hover:bg-gray-50">
-        <div className="p-6">
-          <h3 className="text-lg font-semibold mb-4">
-            Emergency Contacts
-          </h3>
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <span className="text-xl">🚨</span>
-              <div>
-                <p className="font-semibold">Emergency Services</p>
-                <p className="text-sm text-gray-600">
-                  112 (India Emergency Number)
-                </p>
-              </div>
+              <Card className="transition-transform hover:scale-105 hover:bg-gray-50">
+                <div className="p-6">
+                  <h3 className="text-lg font-semibold mb-4">
+                    Emergency Contacts
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">🚨</span>
+                      <div>
+                        <p className="font-semibold">Emergency Services</p>
+                        <p className="text-sm text-gray-600">
+                          112 (India Emergency Number)
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">👮</span>
+                      <div>
+                        <p className="font-semibold">Police</p>
+                        <p className="text-sm text-gray-600">100</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">🏥</span>
+                      <div>
+                        <p className="font-semibold">Medical Emergency</p>
+                        <p className="text-sm text-gray-600">108 (Ambulance)</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Card>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="text-xl">👮</span>
-              <div>
-                <p className="font-semibold">Police</p>
-                <p className="text-sm text-gray-600">100</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-xl">🏥</span>
-              <div>
-                <p className="font-semibold">Medical Emergency</p>
-                <p className="text-sm text-gray-600">108 (Ambulance)</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Card>
-    </div>
 
-    <Card className="transition-transform hover:scale-105 hover:bg-gray-50">
-      <div className="p-6">
-        <h3 className="text-lg font-semibold mb-4">
-          Useful Information
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h4 className="font-semibold mb-2">Currency</h4>
-            <p className="text-sm text-gray-600">Indian Rupee (₹)</p>
+            <Card className="transition-transform hover:scale-105 hover:bg-gray-50">
+              <div className="p-6">
+                <h3 className="text-lg font-semibold mb-4">
+                  Useful Information
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="font-semibold mb-2">Currency</h4>
+                    <p className="text-sm text-gray-600">Indian Rupee (₹)</p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-2">Time Zone</h4>
+                    <p className="text-sm text-gray-600">
+                      Indian Standard Time (IST) UTC +5:30
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-2">Languages</h4>
+                    <p className="text-sm text-gray-600">
+                      Kashmiri, Urdu, Hindi, English
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-2">Electricity</h4>
+                    <p className="text-sm text-gray-600">
+                      230V, 50Hz (Type C, D & M plugs)
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Card>
           </div>
-          <div>
-            <h4 className="font-semibold mb-2">Time Zone</h4>
-            <p className="text-sm text-gray-600">
-              Indian Standard Time (IST) UTC +5:30
-            </p>
-          </div>
-          <div>
-            <h4 className="font-semibold mb-2">Languages</h4>
-            <p className="text-sm text-gray-600">
-              Kashmiri, Urdu, Hindi, English
-            </p>
-          </div>
-          <div>
-            <h4 className="font-semibold mb-2">Electricity</h4>
-            <p className="text-sm text-gray-600">
-              230V, 50Hz (Type C, D & M plugs)
-            </p>
-          </div>
-        </div>
-      </div>
-    </Card>
-  </div>
-)}
+        )}
       </div>
     </div>
   );

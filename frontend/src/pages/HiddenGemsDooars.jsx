@@ -1,9 +1,13 @@
 "use client";
 
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
+import { useAppContext } from "../context/AppContext";
 
 const HiddenGemsDooars = () => {
+  const { setSouvenirLocation } = useAppContext();
+  const navigate = useNavigate();
+
   const attractions = [
     {
       name: "Gorumara National Park",
@@ -483,7 +487,11 @@ const HiddenGemsDooars = () => {
             id="souvenirs"
             label="Souvenirs"
             isActive={activeTab === "souvenirs"}
-            onClick={setActiveTab}
+            onClick={()=>{
+              setActiveTab("souvenirs");
+              setSouvenirLocation("Dooars");
+              navigate("/souvenirbook");
+            }}
           />
           <TabButton
             id="contact"

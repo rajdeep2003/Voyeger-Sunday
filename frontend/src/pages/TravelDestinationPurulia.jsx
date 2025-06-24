@@ -1,8 +1,12 @@
 "use client";
 
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useAppContext } from "../context/AppContext";
 
 const TravelDestinationPurulia = () => {
+  const { setSouvenirLocation } = useAppContext();
+  const navigate = useNavigate();
   const attractions = [
     {
       name: "Ayodhya Hills",
@@ -400,7 +404,11 @@ const TravelDestinationPurulia = () => {
             id="souvenirs"
             label="Souvenirs"
             isActive={activeTab === "souvenirs"}
-            onClick={setActiveTab}
+            onClick={()=>{
+              setActiveTab("souvenirs");
+              setSouvenirLocation("Purulia");
+              navigate("/souvenirbook");
+            }}
           />
           <TabButton
             id="contact"
