@@ -158,8 +158,8 @@ const Emergency = () => {
       if (!digitsOnly) throw new Error(t("emergency.errors.invalidPhone"));
 
       const message = t("emergency.whatsappMessage", {
-        lat: location?.lat,
-        lng: location?.lng,
+        lat: location?.lat !== undefined && location?.lat !== null ? String(location.lat) : "",
+        lng: location?.lng !== undefined && location?.lng !== null ? String(location.lng) : "",
       });
       return `https://wa.me/${digitsOnly}?text=${encodeURIComponent(message)}`;
     } catch (error) {
